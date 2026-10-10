@@ -82,7 +82,13 @@ func _ready() -> void:
 
 	if _tent != null:
 		_tent.update_label_display(upgrade_step, coins)
+		if not _tent.upgrade_purchased.is_connected(_on_tent_upgrade_purchased):
+			_tent.upgrade_purchased.connect(_on_tent_upgrade_purchased)
 
+	_update_ui()
+
+
+func _on_tent_upgrade_purchased(_step: int, _title: String, _cost: int) -> void:
 	_update_ui()
 
 
@@ -111,6 +117,13 @@ func _physics_process(delta: float) -> void:
 	# อัปเดตเวลานับถอยหลังคูลดาวน์ของไม้กวาด
 	if _broom_cooldown_timer > 0.0:
 		_broom_cooldown_timer = maxf(0.0, _broom_cooldown_timer - delta)
+
+	# หากเปิดหน้าต่าง Skill Tree อยู่ ให้หยุดการเคลื่อนที่และการกระทำอื่น
+	if _tent != null and _tent.is_skill_tree_open():
+		velocity.x = 0.0
+		_apply_gravity(delta)
+		move_and_slide()
+		return
 
 	_apply_gravity(delta)
 	_handle_movement()
@@ -151,30 +164,12 @@ func _handle_interactions(delta: float) -> void:
 	if _tent == null:
 		_tent = get_tree().get_first_node_in_group("tent") as Tent
 
-	# 1. ปฏิสัมพันธ์กับเต็นท์ (Tent) - สถานีอัพเกรดแบบเชิงเส้น (Linear Upgrade Station)
+	# 1. ปฏิสัมพันธ์กับเต็นท์ (Tent) - เปิดหน้าต่าง Skill Tree
 	if _tent != null and _tent.is_in_range(global_position.x):
-		var info: Dictionary = _tent.get_upgrade_info(upgrade_step)
-		if info.get("valid", false):
-			var title: String = String(info["title"])
-			var desc: String = String(info["desc"])
-			var cost: int = int(info["cost"])
-			var switch_hint: String = " | [Q] Switch (%s)" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
-
-			if coins >= cost:
-				_set_prompt("[Tent Upgrade] %s (%s)\n[E] Upgrade (%dG)%s" % [title, desc, cost, switch_hint])
-				if Input.is_action_just_pressed("interact"):
-					coins -= cost
-					coins_changed.emit(coins)
-					_apply_upgrade_step(upgrade_step)
-					upgrade_step += 1
-					_tent.upgrade_purchased.emit(upgrade_step - 1, title, cost)
-					_tent.update_label_display(upgrade_step, coins)
-					_update_ui()
-			else:
-				_set_prompt("[Tent Upgrade] %s (%s)\nNeed %dG (Have %dG)%s" % [title, desc, cost, coins, switch_hint])
-		else:
-			var switch_hint_max: String = "\n[Q] Switch Tool: %s" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
-			_set_prompt("[Tent] All Upgrades Maxed!\nCoins: %d%s" % [coins, switch_hint_max])
+		var switch_hint: String = " | [Q] Switch (%s)" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
+		_set_prompt("[Tent] [E] Open Skill Tree%s" % switch_hint)
+		if Input.is_action_just_pressed("interact"):
+			_tent.open_skill_tree(self)
 		return
 
 	# 2. ปฏิสัมพันธ์ตามประเภทไอเทมที่กำลังถือ
@@ -188,7 +183,7 @@ func _handle_interactions(delta: float) -> void:
 
 
 ## นำผลการอัพเกรดแต่ละขั้นมาปรับใช้กับตัวละคร
-func _apply_upgrade_step(step: int) -> void:
+func apply_upgrade_step(step: int) -> void:
 	match step:
 		0: # Hands Lv 2
 			hands_level = 2

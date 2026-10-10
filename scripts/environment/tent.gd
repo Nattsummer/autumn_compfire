@@ -23,6 +23,7 @@ signal upgrade_purchased(step: int, title: String, cost: int)
 @export var upgrade_costs: Array[int] = [30, 80, 180, 400, 800, 1500, 3000, 5500]
 
 @onready var _label: Label = $Label
+@onready var _skill_tree_ui: SkillTreeUI = $SkillTreeUI
 
 
 func _ready() -> void:
@@ -33,6 +34,23 @@ func _ready() -> void:
 ## ตรวจสอบว่าผู้เล่นอยู่ในระยะของเต็นท์หรือไม่
 func is_in_range(target_x: float) -> bool:
 	return absf(global_position.x - target_x) <= interact_radius
+
+
+## เปิดหน้าต่าง Skill Tree
+func open_skill_tree(player: Player) -> void:
+	if _skill_tree_ui != null:
+		_skill_tree_ui.open(player, self)
+
+
+## ปิดหน้าต่าง Skill Tree
+func close_skill_tree() -> void:
+	if _skill_tree_ui != null:
+		_skill_tree_ui.close()
+
+
+## ตรวจสอบว่าหน้าต่าง Skill Tree กำลังเปิดอยู่หรือไม่
+func is_skill_tree_open() -> bool:
+	return _skill_tree_ui != null and _skill_tree_ui.visible
 
 
 ## คืนค่าจำนวนขั้นการอัพเกรดทั้งหมด

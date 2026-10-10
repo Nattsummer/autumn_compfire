@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/environment/tent.gd" id="1_tent_script"]
+[ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_ui.tscn" id="2_skill_tree_ui"]
 
 [node name="Tent" type="Node2D" groups=["tent"]]
 script = ExtResource("1_tent_script")
@@ -21,3 +22,5 @@ offset_bottom = -82.0
 theme_override_font_sizes/font_size = 12
 text = "Tent"
 horizontal_alignment = 1
+
+[node name="SkillTreeUI" parent="." instance=ExtResource("2_skill_tree_ui")]
