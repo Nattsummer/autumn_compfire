@@ -24,13 +24,24 @@ enum ToolType {
 @export var max_broom_sweep: float = 5.0
 
 ## ระยะเวลาคูลดาวน์ของไม้กวาด (วินาทีต่อครั้ง)
-@export var broom_cooldown: float = 0.45
+@export var broom_cooldown: float = 0.60
 
 ## อัตราการเป่าของเครื่องเป่าลม (ใบไม้ต่อวินาทีเมื่อกดค้าง)
-@export var blower_rate: float = 20.0
+@export var blower_rate: float = 30.0
 
 ## เงินสะสมของผู้เล่น
 @export var coins: int = 0
+
+## ลำดับขั้นการอัพเกรดปัจจุบัน (0 ถึง 7 สำหรับ Linear Upgrade 8 ขั้น)
+@export var upgrade_step: int = 0
+
+## เลเวลปัจจุบันของแต่ละอุปกรณ์ (1 ถึง 3)
+@export var hands_level: int = 1
+@export var broom_level: int = 0
+@export var blower_level: int = 0
+
+## รายการอุปกรณ์ที่ปลดล็อกแล้วสำหรับสลับใช้งาน
+var unlocked_tools: Array[ToolType] = [ToolType.HANDS]
 
 ## ไอเทมที่กำลังถืออยู่ปัจจุบัน
 var current_tool: ToolType = ToolType.HANDS
@@ -60,6 +71,39 @@ func _ready() -> void:
 	_leaf_grid = get_tree().get_first_node_in_group("leaf_grid") as LeafGrid
 	_campfire = get_tree().get_first_node_in_group("campfire") as Campfire
 	_tent = get_tree().get_first_node_in_group("tent") as Tent
+
+	# เริ่มต้นรายการอุปกรณ์ที่ปลดล็อกตามเลเวล
+	unlocked_tools.clear()
+	unlocked_tools.append(ToolType.HANDS)
+	if broom_level > 0:
+		unlocked_tools.append(ToolType.BROOM)
+	if blower_level > 0:
+		unlocked_tools.append(ToolType.BLOWER)
+
+	if _tent != null:
+		_tent.update_label_display(upgrade_step, coins)
+
+	_update_ui()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	# สลับอุปกรณ์ที่ปลดล็อกแล้ว (Q หรือ Tab)
+	if event.is_action_pressed("switch_tool"):
+		cycle_unlocked_tool()
+	elif event is InputEventKey and event.pressed and not event.echo:
+		if event.physical_keycode == KEY_Q or event.physical_keycode == KEY_TAB:
+			cycle_unlocked_tool()
+
+
+## สลับใช้อุปกรณ์ในกลุ่มที่ปลดล็อกแล้วแบบวนรอบ
+func cycle_unlocked_tool() -> void:
+	if unlocked_tools.size() <= 1:
+		return
+
+	var current_idx: int = unlocked_tools.find(current_tool)
+	var next_idx: int = (current_idx + 1) % unlocked_tools.size()
+	current_tool = unlocked_tools[next_idx]
+	tool_changed.emit(current_tool)
 	_update_ui()
 
 
@@ -107,22 +151,30 @@ func _handle_interactions(delta: float) -> void:
 	if _tent == null:
 		_tent = get_tree().get_first_node_in_group("tent") as Tent
 
-	# 1. ปฏิสัมพันธ์กับเต็นท์ (Tent) - หมุนเวียนเปลี่ยนไอเทม: Hands -> Broom -> Blower
+	# 1. ปฏิสัมพันธ์กับเต็นท์ (Tent) - สถานีอัพเกรดแบบเชิงเส้น (Linear Upgrade Station)
 	if _tent != null and _tent.is_in_range(global_position.x):
-		var next_tool: ToolType
-		match current_tool:
-			ToolType.HANDS:
-				next_tool = ToolType.BROOM
-			ToolType.BROOM:
-				next_tool = ToolType.BLOWER
-			ToolType.BLOWER:
-				next_tool = ToolType.HANDS
+		var info: Dictionary = _tent.get_upgrade_info(upgrade_step)
+		if info.get("valid", false):
+			var title: String = String(info["title"])
+			var desc: String = String(info["desc"])
+			var cost: int = int(info["cost"])
+			var switch_hint: String = " | [Q] Switch (%s)" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
 
-		_set_prompt("Tent\n[E] Equip %s" % _get_tool_name(next_tool))
-		if Input.is_action_just_pressed("interact"):
-			current_tool = next_tool
-			tool_changed.emit(current_tool)
-			_update_ui()
+			if coins >= cost:
+				_set_prompt("[Tent Upgrade] %s (%s)\n[E] Upgrade (%dG)%s" % [title, desc, cost, switch_hint])
+				if Input.is_action_just_pressed("interact"):
+					coins -= cost
+					coins_changed.emit(coins)
+					_apply_upgrade_step(upgrade_step)
+					upgrade_step += 1
+					_tent.upgrade_purchased.emit(upgrade_step - 1, title, cost)
+					_tent.update_label_display(upgrade_step, coins)
+					_update_ui()
+			else:
+				_set_prompt("[Tent Upgrade] %s (%s)\nNeed %dG (Have %dG)%s" % [title, desc, cost, coins, switch_hint])
+		else:
+			var switch_hint_max: String = "\n[Q] Switch Tool: %s" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
+			_set_prompt("[Tent] All Upgrades Maxed!\nCoins: %d%s" % [coins, switch_hint_max])
 		return
 
 	# 2. ปฏิสัมพันธ์ตามประเภทไอเทมที่กำลังถือ
@@ -133,6 +185,48 @@ func _handle_interactions(delta: float) -> void:
 			_handle_blower_interaction(delta)
 		ToolType.HANDS:
 			_handle_hands_interaction()
+
+
+## นำผลการอัพเกรดแต่ละขั้นมาปรับใช้กับตัวละคร
+func _apply_upgrade_step(step: int) -> void:
+	match step:
+		0: # Hands Lv 2
+			hands_level = 2
+			max_hand_capacity = _tent.hands_capacities[1] if _tent != null else 5
+			leaves_changed.emit(carried_leaves, max_hand_capacity)
+		1: # Hands Lv 3
+			hands_level = 3
+			max_hand_capacity = _tent.hands_capacities[2] if _tent != null else 10
+			leaves_changed.emit(carried_leaves, max_hand_capacity)
+		2: # Unlock Broom Lv 1
+			broom_level = 1
+			max_broom_sweep = _tent.broom_sweeps[0] if _tent != null else 5.0
+			broom_cooldown = _tent.broom_cooldowns[0] if _tent != null else 0.60
+			if not unlocked_tools.has(ToolType.BROOM):
+				unlocked_tools.append(ToolType.BROOM)
+			current_tool = ToolType.BROOM
+			tool_changed.emit(current_tool)
+		3: # Broom Lv 2
+			broom_level = 2
+			max_broom_sweep = _tent.broom_sweeps[1] if _tent != null else 15.0
+			broom_cooldown = _tent.broom_cooldowns[1] if _tent != null else 0.40
+		4: # Broom Lv 3
+			broom_level = 3
+			max_broom_sweep = _tent.broom_sweeps[2] if _tent != null else 35.0
+			broom_cooldown = _tent.broom_cooldowns[2] if _tent != null else 0.25
+		5: # Unlock Blower Lv 1
+			blower_level = 1
+			blower_rate = _tent.blower_rates[0] if _tent != null else 30.0
+			if not unlocked_tools.has(ToolType.BLOWER):
+				unlocked_tools.append(ToolType.BLOWER)
+			current_tool = ToolType.BLOWER
+			tool_changed.emit(current_tool)
+		6: # Blower Lv 2
+			blower_level = 2
+			blower_rate = _tent.blower_rates[1] if _tent != null else 80.0
+		7: # Blower Lv 3
+			blower_level = 3
+			blower_rate = _tent.blower_rates[2] if _tent != null else 200.0
 
 
 ## การทำงานเมื่อถือไม้กวาด (Broom) พร้อมระบบคูลดาวน์
@@ -166,20 +260,22 @@ func _handle_broom_interaction() -> void:
 					var reward: int = _campfire.add_leaves(burn_count)
 					coins += reward
 					coins_changed.emit(coins)
+					if _tent != null:
+						_tent.update_label_display(upgrade_step, coins)
 				_broom_cooldown_timer = broom_cooldown
 		else:
-			_set_prompt("[Broom] Coins: %d\n(No leaves near fire)" % coins)
+			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves near fire)" % [broom_level, coins])
 	else:
 		if available >= 0.5:
-			_set_prompt("[Broom] Coins: %d\n[E] Sweep %s (Max 5)" % [coins, arrow])
+			_set_prompt("[Broom Lv.%d] Coins: %d\n[E] Sweep %s (Max %.0f)" % [broom_level, coins, arrow, max_broom_sweep])
 			if Input.is_action_just_pressed("interact"):
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, max_broom_sweep)
 				_broom_cooldown_timer = broom_cooldown
 		else:
-			_set_prompt("[Broom] Coins: %d\n(No leaves to sweep)" % coins)
+			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves to sweep)" % [broom_level, coins])
 
 
-## การทำงานเมื่อถือเครื่องเป่าลม (Blower) - กดค้างได้ต่อเนื่อง 30 ใบ/วินาที
+## การทำงานเมื่อถือเครื่องเป่าลม (Blower)
 func _handle_blower_interaction(delta: float) -> void:
 	if _leaf_grid == null:
 		return
@@ -194,7 +290,7 @@ func _handle_blower_interaction(delta: float) -> void:
 
 	if blowing_into_fire:
 		if available >= 0.1:
-			_set_prompt("[Blower] Coins: %d\n[Hold E] Blow into Fire (30/s)" % coins)
+			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow into Fire (%.0f/s)" % [blower_level, coins, blower_rate])
 			if Input.is_action_pressed("interact"):
 				var harvested: float = _leaf_grid.harvest_leaves_float(global_position.x, blow_amount)
 				_leaf_burn_buffer += harvested
@@ -205,15 +301,17 @@ func _handle_blower_interaction(delta: float) -> void:
 					var reward: int = _campfire.add_leaves(to_burn)
 					coins += reward
 					coins_changed.emit(coins)
+					if _tent != null:
+						_tent.update_label_display(upgrade_step, coins)
 		else:
-			_set_prompt("[Blower] Coins: %d\n(No leaves near fire)" % coins)
+			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves near fire)" % [blower_level, coins])
 	else:
 		if available >= 0.1:
-			_set_prompt("[Blower] Coins: %d\n[Hold E] Blow %s (30/s)" % [coins, arrow])
+			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow %s (%.0f/s)" % [blower_level, coins, arrow, blower_rate])
 			if Input.is_action_pressed("interact"):
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, blow_amount)
 		else:
-			_set_prompt("[Blower] Coins: %d\n(No leaves to blow)" % coins)
+			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves to blow)" % [blower_level, coins])
 
 
 ## การทำงานเมื่อใช้มือเปล่า (Hands)
@@ -224,16 +322,18 @@ func _handle_hands_interaction() -> void:
 		if carried_leaves > 0:
 			var mult: float = _campfire.get_reward_multiplier()
 			var est_reward: int = int(round(float(carried_leaves * _campfire.base_reward_per_leaf) * mult))
-			_set_prompt("Coins: %d | Leaves: %d/%d\n[E] Feed (+%dG x%.1f)" % [coins, carried_leaves, max_hand_capacity, est_reward, mult])
+			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Feed (+%dG x%.1f)" % [hands_level, coins, carried_leaves, max_hand_capacity, est_reward, mult])
 
 			if Input.is_action_just_pressed("interact"):
 				var reward: int = _campfire.add_leaves(carried_leaves)
 				coins += reward
 				coins_changed.emit(coins)
+				if _tent != null:
+					_tent.update_label_display(upgrade_step, coins)
 				carried_leaves = 0
 				leaves_changed.emit(0, max_hand_capacity)
 		else:
-			_set_prompt("Coins: %d | Leaves: 0/%d\n(Need leaves)" % [coins, max_hand_capacity])
+			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: 0/%d\n(Need leaves)" % [hands_level, coins, max_hand_capacity])
 		return
 
 	if _leaf_grid != null:
@@ -241,26 +341,26 @@ func _handle_hands_interaction() -> void:
 		var can_gather: bool = carried_leaves < max_hand_capacity and available_at_feet >= 1.0
 
 		if carried_leaves >= max_hand_capacity:
-			_set_prompt("Coins: %d | Leaves: %d/%d (Full)" % [coins, carried_leaves, max_hand_capacity])
+			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d (Full)" % [hands_level, coins, carried_leaves, max_hand_capacity])
 		elif can_gather:
-			_set_prompt("Coins: %d | Leaves: %d/%d\n[E] Pick Leaf" % [coins, carried_leaves, max_hand_capacity])
+			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Pick Leaf" % [hands_level, coins, carried_leaves, max_hand_capacity])
 			if Input.is_action_just_pressed("interact"):
 				var gathered: int = _leaf_grid.harvest_leaves(global_position.x, 1)
 				if gathered > 0:
 					carried_leaves += gathered
 					leaves_changed.emit(carried_leaves, max_hand_capacity)
 		else:
-			_set_prompt("Coins: %d | Leaves: %d/%d" % [coins, carried_leaves, max_hand_capacity])
+			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d" % [hands_level, coins, carried_leaves, max_hand_capacity])
 
 
 func _get_tool_name(tool: ToolType) -> String:
 	match tool:
 		ToolType.HANDS:
-			return "Hands"
+			return "Hands Lv.%d" % hands_level
 		ToolType.BROOM:
-			return "Broom"
+			return "Broom Lv.%d" % broom_level
 		ToolType.BLOWER:
-			return "Blower"
+			return "Blower Lv.%d" % blower_level
 		_:
 			return "Unknown"
 
@@ -269,11 +369,11 @@ func _update_ui() -> void:
 	if _status_label != null:
 		match current_tool:
 			ToolType.BROOM:
-				_status_label.text = "[Broom] Coins: %d" % coins
+				_status_label.text = "[Broom Lv.%d] Coins: %d" % [broom_level, coins]
 			ToolType.BLOWER:
-				_status_label.text = "[Blower] Coins: %d" % coins
+				_status_label.text = "[Blower Lv.%d] Coins: %d" % [blower_level, coins]
 			ToolType.HANDS:
-				_status_label.text = "Coins: %d | Leaves: %d/%d" % [coins, carried_leaves, max_hand_capacity]
+				_status_label.text = "[Hands Lv.%d] Coins: %d | Leaves: %d/%d" % [hands_level, coins, carried_leaves, max_hand_capacity]
 
 
 func _set_prompt(text: String) -> void:
