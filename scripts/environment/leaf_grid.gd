@@ -175,5 +175,5 @@ func _draw() -> void:
 			var t: float = clampf((count - 150.0) / 150.0, 0.0, 1.0)
 			fill_color = Color(0.68, 0.12, 0.10, lerpf(0.95, 1.0, t))
 
-		# วาดแท่งแทนความหนาแน่นของกองใบไม้บนพื้นดิน
-		draw_rect(Rect2(x_pos + 1.0, ground_y - pile_height, cell_size - 2.0, pile_height + 2.0), fill_color)
+		# วาดแท่งแทนความหนาแน่นของกองใบไม้บนพื้นดิน เรียงต่อกันเป็นเส้นตรงแนวนอนแบบไร้รอยต่อ
+		draw_rect(Rect2(x_pos, ground_y - pile_height, cell_size, pile_height), fill_color)
