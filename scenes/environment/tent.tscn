@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/environment/tent.gd" id="1_tent_script"]
+
+[node name="Tent" type="Node2D" groups=["tent"]]
+script = ExtResource("1_tent_script")
+
+[node name="TentOuter" type="Polygon2D" parent="."]
+color = Color(0.72, 0.58, 0.42, 1)
+polygon = PackedVector2Array(-55, 0, 0, -80, 55, 0)
+
+[node name="TentFlap" type="Polygon2D" parent="."]
+color = Color(0.28, 0.22, 0.18, 1)
+polygon = PackedVector2Array(-20, 0, 0, -60, 20, 0)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -40.0
+offset_top = -105.0
+offset_right = 40.0
+offset_bottom = -82.0
+theme_override_font_sizes/font_size = 12
+text = "Tent"
+horizontal_alignment = 1

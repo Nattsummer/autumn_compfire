@@ -1,0 +1,150 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main_script"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(3500, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_left_wall"]
+size = Vector2(32, 1200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_right_wall"]
+size = Vector2(32, 1200)
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main_script")
+
+[node name="SkyBackground" type="ColorRect" parent="."]
+z_index = -20
+offset_left = -200.0
+offset_top = -200.0
+offset_right = 3800.0
+offset_bottom = 700.0
+color = Color(0.12, 0.14, 0.22, 1)
+
+[node name="Environment" type="Node2D" parent="."]
+
+[node name="Platform" type="StaticBody2D" parent="Environment"]
+position = Vector2(0, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform"]
+position = Vector2(1750, 20)
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="PlaceholderVisual" type="ColorRect" parent="Environment/Platform"]
+offset_right = 3500.0
+offset_bottom = 40.0
+color = Color(0.22, 0.26, 0.19, 1)
+
+[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(0, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+position = Vector2(-16, -200)
+shape = SubResource("RectangleShape2D_left_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="Environment"]
+position = Vector2(3500, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+position = Vector2(16, -200)
+shape = SubResource("RectangleShape2D_right_wall")
+
+[node name="LeafGrid" parent="Environment" groups=["leaf_grid"] instance=ExtResource("5_leaf_grid_scene")]
+position = Vector2(0, 540)
+
+[node name="CampSite" type="Node2D" parent="Environment"]
+z_index = -2
+
+[node name="Tent" parent="Environment/CampSite" instance=ExtResource("2_tent_scene")]
+position = Vector2(65, 540)
+
+[node name="Campfire" parent="Environment/CampSite" instance=ExtResource("3_campfire_scene")]
+position = Vector2(230, 540)
+
+[node name="ForestTrees" type="Node2D" parent="Environment"]
+z_index = -5
+
+[node name="Tree1" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(450, 540)
+
+[node name="Tree2" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(750, 540)
+
+[node name="Tree3" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(1100, 540)
+
+[node name="Tree4" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(1450, 540)
+
+[node name="Tree5" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(1850, 540)
+
+[node name="Tree6" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(2250, 540)
+
+[node name="Tree7" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(2650, 540)
+
+[node name="Tree8" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(3050, 540)
+
+[node name="Tree9" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+position = Vector2(3350, 540)
+
+[node name="Player" parent="." instance=ExtResource("1_player_scene")]
+position = Vector2(145, 540)
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(0, -60)
+limit_left = 0
+limit_right = 3500
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+drag_horizontal_enabled = true
+drag_left_margin = 0.1
+drag_right_margin = 0.1
+
+[node name="EndGameUI" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="Overlay" type="ColorRect" parent="EndGameUI"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.08, 0.02, 0.02, 0.82)
+
+[node name="CenterBox" type="VBoxContainer" parent="EndGameUI"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="EndGameUI/CenterBox"]
+theme_override_colors/font_color = Color(1, 0.35, 0.15, 1)
+theme_override_font_sizes/font_size = 32
+text = "THE FOREST IS ABLAZE!"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="EndGameUI/CenterBox"]
+theme_override_colors/font_color = Color(0.9, 0.85, 0.8, 1)
+theme_override_font_sizes/font_size = 18
+text = "You fueled the flame until the entire autumn forest caught fire.
+
+- END OF AUTUMN -"
+horizontal_alignment = 1
