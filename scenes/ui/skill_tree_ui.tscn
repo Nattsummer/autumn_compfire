@@ -2,35 +2,21 @@
 
 [ext_resource type="Script" path="res://scripts/ui/skill_tree_ui.gd" id="1_skill_tree_script"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_modal"]
-bg_color = Color(0.11, 0.1, 0.14, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.85, 0.55, 0.22, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 12
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_coins"]
-bg_color = Color(0.18, 0.15, 0.12, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_detail"]
+bg_color = Color(0.08, 0.08, 0.1, 0.96)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(1, 0.78, 0.2, 1)
+border_color = Color(0.45, 0.38, 0.3, 0.8)
 corner_radius_top_left = 6
 corner_radius_top_right = 6
 corner_radius_bottom_right = 6
 corner_radius_bottom_left = 6
-content_margin_left = 10.0
-content_margin_top = 4.0
-content_margin_right = 10.0
-content_margin_bottom = 4.0
+shadow_color = Color(0, 0, 0, 0.4)
+shadow_size = 8
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_flat"]
 
 [node name="SkillTreeUI" type="CanvasLayer"]
 layer = 10
@@ -51,108 +37,138 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.04, 0.03, 0.05, 0.75)
+color = Color(0.04, 0.04, 0.06, 0.88)
 
-[node name="ModalPanel" type="PanelContainer" parent="RootControl"]
-custom_minimum_size = Vector2(1060, 480)
+[node name="Margin" type="MarginContainer" parent="RootControl"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -530.0
-offset_top = -240.0
-offset_right = 530.0
-offset_bottom = 240.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_modal")
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 28
 
-[node name="MarginContainer" type="MarginContainer" parent="RootControl/ModalPanel"]
+[node name="VBox" type="VBoxContainer" parent="RootControl/Margin"]
 layout_mode = 2
-theme_override_constants/margin_left = 18
-theme_override_constants/margin_top = 14
-theme_override_constants/margin_right = 18
-theme_override_constants/margin_bottom = 14
+theme_override_constants/separation = 14
 
-[node name="VBox" type="VBoxContainer" parent="RootControl/ModalPanel/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="Header" type="HBoxContainer" parent="RootControl/ModalPanel/MarginContainer/VBox"]
+[node name="TopBar" type="HBoxContainer" parent="RootControl/Margin/VBox"]
 layout_mode = 2
 
-[node name="TitleBox" type="VBoxContainer" parent="RootControl/ModalPanel/MarginContainer/VBox/Header"]
-layout_mode = 2
-theme_override_constants/separation = 2
-
-[node name="TitleLabel" type="Label" parent="RootControl/ModalPanel/MarginContainer/VBox/Header/TitleBox"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.78, 0.35, 1)
-theme_override_font_sizes/font_size = 18
-text = "⛺ CAMP TENT - EQUIPMENT UPGRADE TREE"
-
-[node name="SubtitleLabel" type="Label" parent="RootControl/ModalPanel/MarginContainer/VBox/Header/TitleBox"]
+[node name="BackButton" type="Button" parent="RootControl/Margin/VBox/TopBar"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
-theme_override_font_sizes/font_size = 11
-text = "Linear Track: Hands (Lv.1-3) ➔ Broom (Lv.1-3) ➔ Blower (Lv.1-3)"
-
-[node name="Spacer" type="Control" parent="RootControl/ModalPanel/MarginContainer/VBox/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CoinsBadge" type="PanelContainer" parent="RootControl/ModalPanel/MarginContainer/VBox/Header"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_coins")
-
-[node name="CoinsLabel" type="Label" parent="RootControl/ModalPanel/MarginContainer/VBox/Header/CoinsBadge"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.25, 1)
-theme_override_font_sizes/font_size = 13
-text = "🪙 Coins: 0"
-
-[node name="CloseButton" type="Button" parent="RootControl/ModalPanel/MarginContainer/VBox/Header"]
-custom_minimum_size = Vector2(90, 30)
-layout_mode = 2
+theme_override_colors/font_hover_color = Color(1, 0.9, 0.8, 1)
 theme_override_font_sizes/font_size = 12
-text = "✕ Close [ESC]"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_flat")
+text = "← BACK [ESC]"
 
-[node name="Separator1" type="HSeparator" parent="RootControl/ModalPanel/MarginContainer/VBox"]
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="RootControl/ModalPanel/MarginContainer/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
-horizontal_scroll_mode = 1
-vertical_scroll_mode = 0
-
-[node name="TrackHBox" type="HBoxContainer" parent="RootControl/ModalPanel/MarginContainer/VBox/ScrollContainer"]
+[node name="SpacerLeft" type="Control" parent="RootControl/Margin/VBox/TopBar"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="RootControl/Margin/VBox/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.92, 0.82, 0.7, 1)
+theme_override_font_sizes/font_size = 14
+text = "TENT WORKBENCH — TOOL EVOLUTION"
+
+[node name="SpacerRight" type="Control" parent="RootControl/Margin/VBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CoinsLabel" type="Label" parent="RootControl/Margin/VBox/TopBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.76, 0.28, 1)
+theme_override_font_sizes/font_size = 13
+text = "COINS: 0"
+
+[node name="Separator" type="HSeparator" parent="RootControl/Margin/VBox"]
+layout_mode = 2
+
+[node name="SpacerUpper" type="Control" parent="RootControl/Margin/VBox"]
+layout_mode = 2
 size_flags_vertical = 3
+
+[node name="TrackArea" type="VBoxContainer" parent="RootControl/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="RailHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/TrackArea"]
+layout_mode = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="SpacerLower" type="Control" parent="RootControl/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DetailContainer" type="CenterContainer" parent="RootControl/Margin/VBox"]
+layout_mode = 2
+
+[node name="DetailCard" type="PanelContainer" parent="RootControl/Margin/VBox/DetailContainer"]
+custom_minimum_size = Vector2(520, 160)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_detail")
+
+[node name="CardMargin" type="MarginContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="CardVBox" type="VBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin"]
+layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Separator2" type="HSeparator" parent="RootControl/ModalPanel/MarginContainer/VBox"]
+[node name="CardHeaderHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
 layout_mode = 2
 
-[node name="Footer" type="HBoxContainer" parent="RootControl/ModalPanel/MarginContainer/VBox"]
+[node name="CardTitle" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.96, 0.85, 0.65, 1)
+theme_override_font_sizes/font_size = 14
+text = "TOOL NAME"
 
-[node name="TipLabel" type="Label" parent="RootControl/ModalPanel/MarginContainer/VBox/Footer"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
-theme_override_font_sizes/font_size = 11
-text = "💡 Linear Progression: Upgrade each stage step-by-step from left to right!"
-
-[node name="Spacer" type="Control" parent="RootControl/ModalPanel/MarginContainer/VBox/Footer"]
+[node name="Spacer" type="Control" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="HintKeyLabel" type="Label" parent="RootControl/ModalPanel/MarginContainer/VBox/Footer"]
+[node name="CardStatus" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.8, 0.4, 0.8)
 theme_override_font_sizes/font_size = 11
-text = "Press [ESC] or [E] to Close"
+text = "STATUS"
+
+[node name="CardDesc" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
+theme_override_font_sizes/font_size = 11
+text = "Description here"
+
+[node name="CardStats" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.88, 0.85, 1)
+theme_override_font_sizes/font_size = 13
+text = "Stats detail"
+
+[node name="ActionHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="ActionButton" type="Button" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/ActionHBox"]
+custom_minimum_size = Vector2(260, 32)
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "UPGRADE"
+
+[node name="FooterHint" type="Label" parent="RootControl/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.5, 0.55, 1)
+theme_override_font_sizes/font_size = 11
+text = "[A / D] Select Node    •    [E] Upgrade Focused Tier    •    [ESC] Exit"
+horizontal_alignment = 1
