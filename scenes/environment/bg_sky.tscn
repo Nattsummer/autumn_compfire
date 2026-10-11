@@ -1,0 +1,50 @@
+[gd_scene format=3 uid="uid://b8tgsigw8kmrv"]
+
+[ext_resource type="Script" uid="uid://8gw2pde8mnth" path="res://scripts/environment/bg_sky.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://cvbpfnpy5o3jx" path="res://assets/environment/background/sky_twilight.png" id="2_sky_tex"]
+[ext_resource type="Texture2D" uid="uid://b0irho11t8l7n" path="res://assets/environment/background/clouds.png" id="3_clouds_tex"]
+[ext_resource type="Texture2D" uid="uid://cwrxfpv3t01kp" path="res://assets/environment/background/bg_mountain_far.png" id="4_mountain_tex"]
+
+[node name="BackgroundSky" type="Node2D" unique_id=913420547]
+script = ExtResource("1_script")
+
+[node name="SkyLayer" type="Parallax2D" parent="." unique_id=904648573]
+z_index = -18
+scale = Vector2(2.035, 2.035)
+scroll_scale = Vector2(0, 1)
+scroll_offset = Vector2(0, -478.82)
+repeat_size = Vector2(128, 0)
+repeat_times = 40
+
+[node name="Sprite2D" type="Sprite2D" parent="SkyLayer" unique_id=706592112]
+position = Vector2(0, 412)
+scale = Vector2(2, 2)
+texture = ExtResource("2_sky_tex")
+centered = false
+
+[node name="CloudLayer" type="Parallax2D" parent="." unique_id=2141800247]
+z_index = -16
+scroll_scale = Vector2(0.08, 1)
+repeat_size = Vector2(128, 0)
+autoscroll = Vector2(6, 0)
+repeat_times = 40
+
+[node name="Sprite2D" type="Sprite2D" parent="CloudLayer" unique_id=176349391]
+position = Vector2(0, 412)
+scale = Vector2(2, 2)
+texture = ExtResource("3_clouds_tex")
+centered = false
+
+[node name="MountainLayer" type="Parallax2D" parent="." unique_id=1272724822]
+z_index = -14
+scale = Vector2(0.5, 0.5)
+scroll_scale = Vector2(0.25, 1)
+scroll_offset = Vector2(0, 204)
+repeat_size = Vector2(255, 0)
+repeat_times = 40
+
+[node name="Sprite2D" type="Sprite2D" parent="MountainLayer" unique_id=408808521]
+position = Vector2(0, 412)
+scale = Vector2(2, 2)
+texture = ExtResource("4_mountain_tex")
+centered = false

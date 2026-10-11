@@ -2,7 +2,7 @@ class_name LeafGrid
 extends Node2D
 
 ## ความกว้างของแต่ละช่อง Grid (Pixel)
-@export var cell_size: float = 80.0
+@export var cell_size: float = 40
 
 ## จำนวนช่อง Grid ทั้งหมด (ครอบคลุมความยาว Platform 3500px)
 @export var total_cells: int = 45

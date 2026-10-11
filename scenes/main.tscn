@@ -4,8 +4,10 @@
 [ext_resource type="PackedScene" uid="uid://com1wkqf1x18c" path="res://scenes/player/player.tscn" id="1_player_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
 [ext_resource type="PackedScene" uid="uid://fnx75iplm1gv" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
-[ext_resource type="PackedScene" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
+[ext_resource type="PackedScene" uid="uid://ougkbupldnhn" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/fg_bush_grass.tscn" id="6_fg_bush_grass_scene"]
+[ext_resource type="PackedScene" uid="uid://b8tgsigw8kmrv" path="res://scenes/environment/bg_sky.tscn" id="7_bg_sky_scene"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(3500, 40)
@@ -25,7 +27,10 @@ offset_left = -200.0
 offset_top = -200.0
 offset_right = 3800.0
 offset_bottom = 700.0
-color = Color(0.12, 0.14, 0.22, 1)
+color = Color(0.3038631, 0.34259856, 0.49556446, 1)
+
+[node name="BackgroundSky" parent="." unique_id=1311460577 instance=ExtResource("7_bg_sky_scene")]
+cloud_wind_speed = 0.5
 
 [node name="Environment" type="Node2D" parent="." unique_id=148177899]
 
@@ -37,9 +42,10 @@ position = Vector2(1750, 20)
 shape = SubResource("RectangleShape2D_platform")
 
 [node name="PlaceholderVisual" type="ColorRect" parent="Environment/Platform" unique_id=570170708]
+z_index = 10
 offset_right = 3500.0
-offset_bottom = 40.0
-color = Color(0.22, 0.26, 0.19, 1)
+offset_bottom = 184.0
+color = Color(0.13333334, 0.1254902, 0.20392157, 1)
 
 [node name="LeftWall" type="StaticBody2D" parent="Environment" unique_id=348773154]
 position = Vector2(0, 540)
@@ -57,6 +63,7 @@ shape = SubResource("RectangleShape2D_right_wall")
 
 [node name="LeafGrid" parent="Environment" unique_id=775733339 groups=["leaf_grid"] instance=ExtResource("5_leaf_grid_scene")]
 position = Vector2(0, 540)
+cell_size = 32.0
 
 [node name="CampSite" type="Node2D" parent="Environment" unique_id=41091847]
 z_index = -2
@@ -97,16 +104,17 @@ position = Vector2(3050, 540)
 [node name="Tree9" parent="Environment/ForestTrees" unique_id=1930113799 instance=ExtResource("4_tree_scene")]
 position = Vector2(3350, 540)
 
+[node name="ForegroundBushGrass" parent="Environment" unique_id=521554728 instance=ExtResource("6_fg_bush_grass_scene")]
+z_as_relative = false
+
 [node name="Player" parent="." unique_id=1395849955 instance=ExtResource("1_player_scene")]
 position = Vector2(145, 540)
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=1763098209]
-position = Vector2(0, -25)
-zoom = Vector2(2, 2)
+offset = Vector2(0, -65)
+zoom = Vector2(3.2, 3.2)
 limit_left = 0
 limit_right = 3500
-position_smoothing_enabled = true
-position_smoothing_speed = 6.0
 drag_horizontal_enabled = true
 drag_left_margin = 0.1
 drag_right_margin = 0.1

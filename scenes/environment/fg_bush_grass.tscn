@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/environment/fg_bush_grass.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://assets/environment/foreground/fg_bush_grass_sheet.png" id="2_tex"]
+
+[sub_resource type="AtlasTexture" id="Atlas_grass"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 56, 64, 8)
+
+[sub_resource type="AtlasTexture" id="Atlas_overhead"]
+atlas = ExtResource("2_tex")
+region = Rect2(0, 0, 64, 8)
+
+[node name="ForegroundBushGrass" type="Parallax2D"]
+z_index = 10
+scroll_scale = Vector2(1.35, 1.0)
+repeat_size = Vector2(64, 0)
+repeat_times = 60
+script = ExtResource("1_script")
+
+[node name="GrassSprite" type="Sprite2D" parent="."]
+texture_filter = 0
+position = Vector2(0, 532)
+texture = SubResource("Atlas_grass")
+centered = false
+
+[node name="OverheadSprite" type="Sprite2D" parent="."]
+texture_filter = 0
+position = Vector2(0, 353)
+texture = SubResource("Atlas_overhead")
+centered = false

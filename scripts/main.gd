@@ -4,6 +4,7 @@ extends Node2D
 @onready var _campfire: Campfire = $Environment/CampSite/Campfire
 @onready var _forest_trees: Node2D = $Environment/ForestTrees
 @onready var _sky_bg: ColorRect = $SkyBackground
+@onready var _bg_sky: BackgroundSky = $BackgroundSky
 @onready var _end_game_layer: CanvasLayer = $EndGameUI
 
 
@@ -18,6 +19,8 @@ func _on_wildfire_started() -> void:
 	if _sky_bg != null:
 		var tween: Tween = create_tween()
 		tween.tween_property(_sky_bg, "color", Color(0.78, 0.22, 0.08, 1.0), 3.0)
+	if _bg_sky != null:
+		_bg_sky.on_wildfire_started()
 
 	# 2. ไฟลามไปติดต้นไม้ทุกต้นตามลำดับจากซ้ายไปขวา
 	if _forest_trees != null:
