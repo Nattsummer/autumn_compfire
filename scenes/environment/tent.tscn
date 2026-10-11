@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dek6ha3mriwwu" path="res://scripts/environment/tent.gd" id="1_tent_script"]
 [ext_resource type="Texture2D" uid="uid://b58hludk75swo" path="res://assets/environment/camp/tent_flutter_sheet.png" id="2_tent_sheet"]
-[ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_ui.tscn" id="3_skill_tree_ui"]
-[ext_resource type="Texture2D" path="res://assets/ui/icons/marker_arrow_green.png" id="4_marker_arrow"]
+[ext_resource type="PackedScene" uid="uid://dpsklltr01ui" path="res://scenes/ui/skill_tree_ui.tscn" id="3_skill_tree_ui"]
+[ext_resource type="Texture2D" uid="uid://qwd3ibqlbme" path="res://assets/ui/icons/marker_arrow_green.png" id="4_marker_arrow"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0"]
 atlas = ExtResource("2_tent_sheet")

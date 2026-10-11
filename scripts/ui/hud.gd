@@ -50,6 +50,21 @@ func _ready() -> void:
 		_prompt_box.visible = false
 
 
+## ซ่อนหรือแสดง HUD ทั้งหมด
+func set_hud_visible(should_show: bool) -> void:
+	visible = should_show
+
+
+## ซ่อน HUD ทั้งหมด (เช่น เมื่อเปิดเต็นท์)
+func hide_hud() -> void:
+	visible = false
+
+
+## แสดง HUD ทั้งหมดอีกครั้ง
+func show_hud() -> void:
+	visible = true
+
+
 func _get_tent() -> Tent:
 	if _tent == null:
 		_tent = get_tree().get_first_node_in_group("tent") as Tent

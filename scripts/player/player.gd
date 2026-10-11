@@ -180,6 +180,7 @@ func _handle_interactions(delta: float) -> void:
 	if _tent != null and _tent.is_in_range(global_position.x):
 		_set_prompt("[E] Open Upgrades")
 		if Input.is_action_just_pressed("interact"):
+			_set_prompt("")
 			_tent.open_skill_tree(self)
 		return
 
@@ -469,6 +470,10 @@ func _set_prompt(text: String) -> void:
 		prompt_updated.emit("", "", false)
 	else:
 		prompt_updated.emit(key_code, action_text, true)
+
+
+func _clear_prompt() -> void:
+	_set_prompt("")
 
 
 func _get_tool_anim_prefix() -> String:

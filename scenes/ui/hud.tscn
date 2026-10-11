@@ -86,7 +86,7 @@ font_color = Color(0, 1, 0, 1)
 shadow_size = 2
 shadow_color = Color(0, 0, 0, 1)
 
-[node name="HUD" type="CanvasLayer" unique_id=1893210140]
+[node name="HUD" type="CanvasLayer" unique_id=1893210140 groups=["hud"]]
 layer = 5
 script = ExtResource("1_hud_script")
 
