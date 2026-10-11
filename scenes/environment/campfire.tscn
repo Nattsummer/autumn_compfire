@@ -1,9 +1,10 @@
-[gd_scene format=3 uid="uid://fnx75iplm1gv"]
+[gd_scene format=3 uid="uid://cu6uhg26pyhvm"]
 
 [ext_resource type="Script" uid="uid://bk7pum5qahb8q" path="res://scripts/environment/campfire.gd" id="1_campfire_script"]
 [ext_resource type="Texture2D" uid="uid://chd0nd3w4foml" path="res://assets/environment/campfire/campfire_logs.png" id="2_logs_texture"]
 [ext_resource type="Shader" uid="uid://g1q4ceblcmxa" path="res://assets/vfx/campfire.tres" id="3_ikhi0"]
 [ext_resource type="Texture2D" uid="uid://dewjisuy7oh48" path="res://assets/vfx/pix_circle.png" id="4_sxb8s"]
+[ext_resource type="AudioStream" uid="uid://blwsuctb1j3qv" path="res://assets/audio/sfx/campfire.wav" id="5_campfire_sfx"]
 
 [sub_resource type="Gradient" id="Gradient_smoke"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -94,3 +95,14 @@ text = "Campfire
 Burned: 0
 x1.0 Bonus"
 horizontal_alignment = 1
+
+[node name="FireLoopSFX" type="AudioStreamPlayer2D" parent="." unique_id=175377114]
+stream = ExtResource("5_campfire_sfx")
+volume_db = -32.0
+autoplay = true
+max_distance = 1500.0
+
+[node name="FireFlareSFX" type="AudioStreamPlayer2D" parent="." unique_id=35800441]
+stream = ExtResource("5_campfire_sfx")
+volume_db = -15.0
+max_distance = 1500.0

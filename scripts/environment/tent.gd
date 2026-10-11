@@ -8,19 +8,19 @@ signal upgrade_purchased(step: int, title: String, cost: int)
 @export var interact_radius: float = 65.0
 
 ## ลำดับค่าสเตตัสของมือ (จำนวนใบไม้ที่เก็บได้ตามเลเวล 1, 2, 3)
-@export var hands_capacities: Array[int] = [2, 5, 10]
+@export var hands_capacities: Array[int] = [1, 3, 6]
 
 ## ลำดับค่าสเตตัสของไม้กวาด (จำนวนใบไม้ที่กวาดได้ต่อครั้งตามเลเวล 1, 2, 3)
-@export var broom_sweeps: Array[float] = [5.0, 15.0, 35.0]
+@export var broom_sweeps: Array[float] = [5.0, 7.0, 10.0]
 
 ## ลำดับค่าคูลดาวน์ของไม้กวาด (วินาทีตามเลเวล 1, 2, 3)
-@export var broom_cooldowns: Array[float] = [0.60, 0.40, 0.25]
+@export var broom_cooldowns: Array[float] = [0.60, 0.5, 0.5]
 
 ## ลำดับอัตราการเป่าของเครื่องเป่าลม (ใบไม้ต่อวินาทีตามเลเวล 1, 2, 3)
-@export var blower_rates: Array[float] = [30.0, 80.0, 200.0]
+@export var blower_rates: Array[float] = [20.0, 35.0, 100.0]
 
 ## ราคาอัพเกรดแบบเชิงเส้น (Linear 8 ขั้น: Hands Lv2, Hands Lv3, Unlock Broom Lv1, Broom Lv2, Broom Lv3, Unlock Blower Lv1, Blower Lv2, Blower Lv3)
-@export var upgrade_costs: Array[int] = [30, 80, 180, 400, 800, 1500, 3000, 5500]
+@export var upgrade_costs: Array[int] = [40, 150, 360, 2400, 8000, 12000, 25000, 50000]
 
 @onready var _label: Label = $Label
 @onready var _skill_tree_ui: SkillTreeUI = $SkillTreeUI
