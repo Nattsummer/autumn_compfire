@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dpsklltr01ui"]
 
-[ext_resource type="Script" path="res://scripts/ui/skill_tree_ui.gd" id="1_skill_tree_script"]
+[ext_resource type="Script" uid="uid://wpot8keael8m" path="res://scripts/ui/skill_tree_ui.gd" id="1_skill_tree_script"]
 [ext_resource type="FontFile" uid="uid://3txdjoyec5au" path="res://assets/font/Peaberry-Font-v2.0/Peaberry Font Family/Peaberry Base/Peaberry-Base.otf" id="2_peaberry_base"]
 [ext_resource type="Texture2D" uid="uid://b2446x0npo2ob" path="res://assets/ui/icons/icon_coin.png" id="3_icon_coin"]
 [ext_resource type="Texture2D" uid="uid://bdbvcqc3upife" path="res://assets/ui/icons/icon_hands.png" id="4_icon_hands"]
@@ -20,17 +20,16 @@ thickness = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
 bg_color = Color(0.13, 0.09, 0.07, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.5, 0.36, 0.24, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.3254902, 0.23137255, 0.16078432, 1)
+border_blend = true
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
-shadow_color = Color(0.02, 0.01, 0.01, 0.6)
-shadow_size = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_frame"]
 bg_color = Color(0.08, 0.05, 0.04, 0.9)
@@ -72,11 +71,11 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="SkillTreeUI" type="CanvasLayer"]
+[node name="SkillTreeUI" type="CanvasLayer" unique_id=1602976745]
 layer = 10
 script = ExtResource("1_skill_tree_script")
 
-[node name="RootControl" type="Control" parent="."]
+[node name="RootControl" type="Control" parent="." unique_id=1144660309]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -85,7 +84,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_skill_tree")
 
-[node name="Backdrop" type="ColorRect" parent="RootControl"]
+[node name="Backdrop" type="ColorRect" parent="RootControl" unique_id=477668953]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
@@ -95,7 +94,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.05, 0.04, 0.88)
 
-[node name="TopSection" type="Control" parent="RootControl"]
+[node name="TopSection" type="Control" parent="RootControl" unique_id=1558061993]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 10
@@ -103,7 +102,7 @@ anchor_right = 1.0
 offset_bottom = 76.0
 grow_horizontal = 2
 
-[node name="TopMargin" type="MarginContainer" parent="RootControl/TopSection"]
+[node name="TopMargin" type="MarginContainer" parent="RootControl/TopSection" unique_id=478003398]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -114,34 +113,34 @@ theme_override_constants/margin_left = 36
 theme_override_constants/margin_top = 20
 theme_override_constants/margin_right = 36
 
-[node name="TopVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin"]
+[node name="TopVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin" unique_id=114901724]
 layout_mode = 2
 theme_override_constants/separation = 10
 
-[node name="TopBar" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox"]
+[node name="TopBar" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox" unique_id=1174176230]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+[node name="BackButton" type="Button" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar" unique_id=501076568]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.75, 0.65, 1)
 theme_override_colors/font_hover_color = Color(1, 0.92, 0.8, 1)
 theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("StyleBoxEmpty_back")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_back")
 theme_override_styles/pressed = SubResource("StyleBoxEmpty_back")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_back")
 text = "← LEAVE [ESC]"
 
-[node name="SpacerLeft" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+[node name="SpacerLeft" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar" unique_id=1187192610]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="TitleVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+[node name="TitleVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar" unique_id=1714408632]
 layout_mode = 2
 theme_override_constants/separation = 1
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox"]
+[node name="TitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox" unique_id=1608586588]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.88, 0.65, 1)
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
@@ -151,23 +150,23 @@ theme_override_font_sizes/font_size = 18
 text = "TENT WORKBENCH"
 horizontal_alignment = 1
 
-[node name="SubtitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox"]
+[node name="SubtitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox" unique_id=1097859407]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.78, 0.62, 0.45, 0.9)
 theme_override_font_sizes/font_size = 10
 text = "GEAR CRAFTING & TOOL EVOLUTION"
 horizontal_alignment = 1
 
-[node name="SpacerRight" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+[node name="SpacerRight" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar" unique_id=1699776601]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CoinHBox" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+[node name="CoinHBox" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar" unique_id=394113922]
 layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 2
 
-[node name="CoinIcon" type="TextureRect" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox"]
+[node name="CoinIcon" type="TextureRect" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox" unique_id=3856108]
 texture_filter = 1
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
@@ -176,7 +175,7 @@ texture = ExtResource("3_icon_coin")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CoinsLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox"]
+[node name="CoinsLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox" unique_id=1928253654]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.86, 0.35, 1)
@@ -186,14 +185,13 @@ theme_override_constants/shadow_offset_y = 1
 theme_override_font_sizes/font_size = 16
 text = "0"
 
-[node name="Separator" type="HSeparator" parent="RootControl/TopSection/TopMargin/TopVBox"]
+[node name="Separator" type="HSeparator" parent="RootControl/TopSection/TopMargin/TopVBox" unique_id=1195521208]
 layout_mode = 2
 theme_override_styles/separator = SubResource("StyleBoxLine_separator")
 
-[node name="MiddleSection" type="Control" parent="RootControl"]
+[node name="MiddleSection" type="Control" parent="RootControl" unique_id=844615216]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.43
 anchor_right = 0.5
@@ -201,7 +199,7 @@ anchor_bottom = 0.43
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TrackArea" type="VBoxContainer" parent="RootControl/MiddleSection"]
+[node name="TrackArea" type="VBoxContainer" parent="RootControl/MiddleSection" unique_id=1382476551]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -217,48 +215,48 @@ grow_vertical = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="CategoryHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea"]
+[node name="CategoryHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea" unique_id=1201543866]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="CatHands" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+[node name="CatHands" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox" unique_id=647461616]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.85, 0.58, 0.95)
 theme_override_font_sizes/font_size = 11
 text = "[ I. GATHERING HANDS ]"
 
-[node name="CatDivider1" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+[node name="CatDivider1" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox" unique_id=522355019]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.32, 0.25, 0.8)
 theme_override_font_sizes/font_size = 11
 text = "•"
 
-[node name="CatBroom" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+[node name="CatBroom" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox" unique_id=1054254551]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.95, 0.72, 0.42, 0.95)
 theme_override_font_sizes/font_size = 11
 text = "[ II. BAMBOO BROOM ]"
 
-[node name="CatDivider2" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+[node name="CatDivider2" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox" unique_id=1205194811]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.32, 0.25, 0.8)
 theme_override_font_sizes/font_size = 11
 text = "•"
 
-[node name="CatBlower" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+[node name="CatBlower" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox" unique_id=303836581]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.78, 0.95, 0.95)
 theme_override_font_sizes/font_size = 11
 text = "[ III. LEAF BLOWER ]"
 
-[node name="RailHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea"]
+[node name="RailHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea" unique_id=140865344]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="BottomSection" type="Control" parent="RootControl"]
+[node name="BottomSection" type="Control" parent="RootControl" unique_id=331996425]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 12
@@ -269,7 +267,7 @@ offset_top = -236.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="BottomMargin" type="MarginContainer" parent="RootControl/BottomSection"]
+[node name="BottomMargin" type="MarginContainer" parent="RootControl/BottomSection" unique_id=1782689687]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -280,44 +278,44 @@ theme_override_constants/margin_left = 36
 theme_override_constants/margin_right = 36
 theme_override_constants/margin_bottom = 16
 
-[node name="BottomVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin"]
+[node name="BottomVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin" unique_id=1246100205]
 layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 1
 
-[node name="DetailContainer" type="CenterContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox"]
+[node name="DetailContainer" type="CenterContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox" unique_id=1778476289]
 layout_mode = 2
 
-[node name="DetailCard" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer"]
+[node name="DetailCard" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer" unique_id=443555062]
 custom_minimum_size = Vector2(580, 168)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_card")
 
-[node name="CardMargin" type="MarginContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard"]
+[node name="CardMargin" type="MarginContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard" unique_id=1054609057]
 layout_mode = 2
 theme_override_constants/margin_left = 18
 theme_override_constants/margin_top = 14
 theme_override_constants/margin_right = 18
 theme_override_constants/margin_bottom = 14
 
-[node name="CardHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin"]
+[node name="CardHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin" unique_id=1318451253]
 layout_mode = 2
 theme_override_constants/separation = 16
 
-[node name="IconColumn" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox"]
+[node name="IconColumn" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox" unique_id=1037095923]
 custom_minimum_size = Vector2(76, 0)
 layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="IconFrame" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn"]
+[node name="IconFrame" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn" unique_id=2087510753]
 custom_minimum_size = Vector2(58, 58)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_icon_frame")
 
-[node name="DetailIcon" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn/IconFrame"]
+[node name="DetailIcon" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn/IconFrame" unique_id=4902441]
 unique_name_in_owner = true
 texture_filter = 1
 custom_minimum_size = Vector2(36, 36)
@@ -328,7 +326,7 @@ texture = ExtResource("4_icon_hands")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="DetailTier" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn"]
+[node name="DetailTier" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn" unique_id=693483805]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.85, 0.72, 0.5, 1)
@@ -336,33 +334,33 @@ theme_override_font_sizes/font_size = 11
 text = "TIER I"
 horizontal_alignment = 1
 
-[node name="RightVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox"]
+[node name="RightVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox" unique_id=371892630]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 6
 alignment = 1
 
-[node name="CardHeaderHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+[node name="CardHeaderHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox" unique_id=2020945380]
 layout_mode = 2
 
-[node name="CardTitle" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
+[node name="CardTitle" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox" unique_id=1015698234]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.9, 0.75, 1)
 theme_override_font_sizes/font_size = 15
 text = "TOOL NAME"
 
-[node name="Spacer" type="Control" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
+[node name="Spacer" type="Control" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox" unique_id=101286211]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CardStatus" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
+[node name="CardStatus" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox" unique_id=749821778]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 11
 text = "STATUS"
 
-[node name="CardDesc" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+[node name="CardDesc" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox" unique_id=1796654539]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.72, 0.62, 1)
@@ -370,22 +368,22 @@ theme_override_font_sizes/font_size = 12
 text = "Description here"
 autowrap_mode = 2
 
-[node name="StatsPanel" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+[node name="StatsPanel" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox" unique_id=380392997]
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_stats")
 
-[node name="CardStats" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/StatsPanel"]
+[node name="CardStats" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/StatsPanel" unique_id=2015131111]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.88, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "Stats detail"
 
-[node name="ActionHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+[node name="ActionHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox" unique_id=6409552]
 layout_mode = 2
 alignment = 1
 
-[node name="ActionButton" type="Button" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/ActionHBox"]
+[node name="ActionButton" type="Button" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/ActionHBox" unique_id=2126401515]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(280, 32)
 layout_mode = 2
@@ -393,16 +391,16 @@ theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("StyleBoxFlat_action")
 text = "UPGRADE"
 
-[node name="FooterBar" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox"]
+[node name="FooterBar" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox" unique_id=2068741883]
 layout_mode = 2
 theme_override_constants/separation = 14
 alignment = 1
 
-[node name="NavPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+[node name="NavPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar" unique_id=1326222129]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="KeyA" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+[node name="KeyA" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox" unique_id=1068111241]
 texture_filter = 1
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -411,7 +409,7 @@ texture = ExtResource("5_key_a")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="KeyD" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+[node name="KeyD" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox" unique_id=686455981]
 texture_filter = 1
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -420,23 +418,23 @@ texture = ExtResource("6_key_d")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="NavLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+[node name="NavLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox" unique_id=1498119202]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
 theme_override_font_sizes/font_size = 11
 text = "Select Tier"
 
-[node name="Dot1" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+[node name="Dot1" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar" unique_id=1172460580]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.28, 0.22, 1)
 theme_override_font_sizes/font_size = 11
 text = "•"
 
-[node name="CraftPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+[node name="CraftPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar" unique_id=1380773846]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="KeyE" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox"]
+[node name="KeyE" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox" unique_id=133676422]
 texture_filter = 1
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
@@ -445,19 +443,19 @@ texture = ExtResource("7_key_e")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="CraftLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox"]
+[node name="CraftLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox" unique_id=826616864]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
 theme_override_font_sizes/font_size = 11
 text = "Craft Upgrade"
 
-[node name="Dot2" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+[node name="Dot2" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar" unique_id=260680219]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.28, 0.22, 1)
 theme_override_font_sizes/font_size = 11
 text = "•"
 
-[node name="EscLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+[node name="EscLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar" unique_id=150856644]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
 theme_override_font_sizes/font_size = 11

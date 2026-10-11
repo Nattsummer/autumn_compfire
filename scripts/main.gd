@@ -9,6 +9,7 @@ extends Node2D
 @onready var _forest_trees: Node2D = $Environment/ForestTrees
 @onready var _sky_bg: ColorRect = $SkyBackground
 @onready var _bg_sky: BackgroundSky = $BackgroundSky
+@onready var _hud: CanvasLayer = $HUD
 @onready var _end_game_layer: CanvasLayer = $EndGameUI
 @onready var _bgm_player: AudioStreamPlayer = $BGMPlayer
 
@@ -26,7 +27,14 @@ func _on_wildfire_started() -> void:
 	if _player != null:
 		_player.disable_input()
 
-	# 2. แพนมุมกล้องขึ้นสู่ท้องฟ้าอย่างช้ามากๆ (Extremely slow majestic pan to sky) โดยให้ภูเขาอยู่กับที่ ไม่ต้องยกขึ้นไปด้วย
+	# 2. ปิดและซ่อน HUD ทันทีเมื่อเข้าสู่ฉากจบ (Hide HUD during ending sequence)
+	if _hud != null:
+		if _hud.has_method("hide_for_ending"):
+			_hud.hide_for_ending()
+		else:
+			_hud.visible = false
+
+	# 3. แพนมุมกล้องขึ้นสู่ท้องฟ้าอย่างช้ามากๆ (Extremely slow majestic pan to sky) โดยให้ภูเขาอยู่กับที่ ไม่ต้องยกขึ้นไปด้วย
 	var pan_duration: float = 20.0
 	if _camera != null:
 		var cam_tween: Tween = create_tween().set_parallel(true)
@@ -88,6 +96,8 @@ func _switch_to_endgame_bgm() -> void:
 
 
 func _show_end_game_screen() -> void:
+	if _hud != null:
+		_hud.visible = false
 	if _end_game_layer != null:
 		_end_game_layer.visible = true
 		var overlay: Control = _end_game_layer.get_node_or_null("Overlay") as Control

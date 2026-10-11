@@ -1,17 +1,17 @@
-[gd_scene format=3 uid="uid://dgoujgk65hqf3"]
+[gd_scene format=3 uid="uid://bv5ow8qpvgx8e"]
 
 [ext_resource type="Script" uid="uid://ddwdeolc5xor1" path="res://scripts/main.gd" id="1_main_script"]
 [ext_resource type="PackedScene" uid="uid://jxdpqhab2dwd" path="res://scenes/player/player.tscn" id="1_player_scene"]
-[ext_resource type="PackedScene" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
-[ext_resource type="PackedScene" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
-[ext_resource type="PackedScene" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
+[ext_resource type="PackedScene" uid="uid://dgjv5gf08o6yf" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
+[ext_resource type="PackedScene" uid="uid://cu6uhg26pyhvm" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
+[ext_resource type="PackedScene" uid="uid://ougkbupldnhn" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/fg_bush_grass.tscn" id="6_fg_bush_grass_scene"]
 [ext_resource type="PackedScene" uid="uid://b8tgsigw8kmrv" path="res://scenes/environment/bg_sky.tscn" id="7_bg_sky_scene"]
-[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud_scene"]
 [ext_resource type="AudioStream" uid="uid://hlt17821rri4" path="res://assets/audio/bgm/play_scene.wav" id="8_bgm"]
+[ext_resource type="PackedScene" uid="uid://dy3axe02xkojw" path="res://scenes/ui/hud.tscn" id="8_hud_scene"]
 [ext_resource type="AudioStream" uid="uid://bpe0l57ts4ts3" path="res://assets/audio/bgm/ambiance.mp3" id="10_choun"]
-[ext_resource type="AudioStream" uid="uid://d30jmmi66i21v" path="res://assets/audio/bgm/endgame_scene.wav" id="11_endgame_bgm"]
+[ext_resource type="FontFile" uid="uid://cbqo56ue8sjgv" path="res://assets/font/Peaberry-Font-v2.0/Peaberry Font Family/Peaberry Monospace/PeaberryMono.woff2" id="10_eb6dy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(3500, 40)
@@ -22,9 +22,12 @@ size = Vector2(32, 1200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_right_wall"]
 size = Vector2(32, 1200)
 
+[sub_resource type="LabelSettings" id="LabelSettings_cesm1"]
+font = ExtResource("10_eb6dy")
+font_color = Color(1, 0, 0, 1)
+
 [node name="Main" type="Node2D" unique_id=1913619799]
 script = ExtResource("1_main_script")
-endgame_bgm = ExtResource("11_endgame_bgm")
 
 [node name="SkyBackground" type="ColorRect" parent="." unique_id=749941005]
 z_index = -20
@@ -124,10 +127,10 @@ drag_horizontal_enabled = true
 drag_left_margin = 0.1
 drag_right_margin = 0.1
 
-[node name="HUD" parent="." instance=ExtResource("8_hud_scene")]
+[node name="HUD" parent="." unique_id=1397102024 instance=ExtResource("8_hud_scene")]
 
 [node name="EndGameUI" type="CanvasLayer" parent="." unique_id=1463716396]
-visible = false
+layer = 10
 
 [node name="Overlay" type="ColorRect" parent="EndGameUI" unique_id=1794400775]
 anchors_preset = 15
@@ -156,6 +159,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.35, 0.15, 1)
 theme_override_font_sizes/font_size = 32
 text = "THE FOREST IS ABLAZE!"
+label_settings = SubResource("LabelSettings_cesm1")
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="EndGameUI/CenterBox" unique_id=329790258]
@@ -165,6 +169,7 @@ theme_override_font_sizes/font_size = 18
 text = "You fueled the flame until the entire autumn forest caught fire.
 
 - END OF AUTUMN -"
+label_settings = SubResource("LabelSettings_cesm1")
 horizontal_alignment = 1
 
 [node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=1862443144]

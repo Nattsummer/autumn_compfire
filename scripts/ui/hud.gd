@@ -10,6 +10,8 @@ const ICON_LEAF: Texture2D = preload("res://assets/ui/icons/icon_leaf.png")
 const KEY_E: Texture2D = preload("res://assets/ui/keys/key_e.png")
 const KEY_SPACE: Texture2D = preload("res://assets/ui/keys/key_space.png")
 
+@onready var _root_control: Control = $RootControl
+
 @onready var _leaf_label: Label = %LeafLabel
 @onready var _coin_label: Label = %CoinLabel
 
@@ -25,8 +27,10 @@ const KEY_SPACE: Texture2D = preload("res://assets/ui/keys/key_space.png")
 
 var _player: Player = null
 var _tent: Tent = null
+var _campfire: Campfire = null
 var _alert_tween: Tween = null
 var _alert_pulse_tween: Tween = null
+var _is_ending: bool = false
 
 
 func _ready() -> void:
@@ -46,12 +50,20 @@ func _ready() -> void:
 	_tent = _get_tent()
 	_check_tent_upgrade_alert()
 
+	_campfire = get_tree().get_first_node_in_group("campfire") as Campfire
+	if _campfire != null and not _campfire.wildfire_started.is_connected(hide_for_ending):
+		_campfire.wildfire_started.connect(hide_for_ending)
+
 	if _prompt_box != null:
 		_prompt_box.visible = false
 
 
 ## ซ่อนหรือแสดง HUD ทั้งหมด
 func set_hud_visible(should_show: bool) -> void:
+	if _is_ending and should_show:
+		return
+	if should_show and _root_control != null:
+		_root_control.modulate.a = 1.0
 	visible = should_show
 
 
@@ -62,7 +74,31 @@ func hide_hud() -> void:
 
 ## แสดง HUD ทั้งหมดอีกครั้ง
 func show_hud() -> void:
+	if _is_ending:
+		return
+	if _root_control != null:
+		_root_control.modulate.a = 1.0
 	visible = true
+
+
+## ซ่อน HUD เมื่อเข้าสู่ฉากจบเกมอย่างถาวรและนุ่มนวล
+func hide_for_ending(fade_duration: float = 0.5) -> void:
+	_is_ending = true
+	if _alert_pulse_tween != null and _alert_pulse_tween.is_valid():
+		_alert_pulse_tween.kill()
+	if _alert_tween != null and _alert_tween.is_valid():
+		_alert_tween.kill()
+	if _prompt_box != null:
+		_prompt_box.visible = false
+	if _tent_upgrade_alert != null:
+		_tent_upgrade_alert.visible = false
+
+	if _root_control != null and fade_duration > 0.0 and is_inside_tree():
+		var tween: Tween = create_tween()
+		tween.tween_property(_root_control, "modulate:a", 0.0, fade_duration)
+		tween.tween_callback(func() -> void: visible = false)
+	else:
+		visible = false
 
 
 func _get_tent() -> Tent:
@@ -79,7 +115,7 @@ func _on_tent_upgrade_purchased(_step: int, _title: String, _cost: int) -> void:
 
 ## ตรวจสอบสถานะการอัพเกรดเต็นท์และแสดง/ซ่อน Alert ที่กึ่งกลางบนของหน้าจอ
 func _check_tent_upgrade_alert() -> void:
-	if _tent_upgrade_alert == null:
+	if _is_ending or _tent_upgrade_alert == null:
 		return
 
 	var tent: Tent = _get_tent()
@@ -188,7 +224,7 @@ func _on_tool_changed(new_tool: Player.ToolType) -> void:
 
 
 func _on_prompt_updated(key_code: String, text: String, should_show: bool) -> void:
-	if _prompt_box == null:
+	if _is_ending or _prompt_box == null:
 		return
 
 	if not should_show or text.is_empty():

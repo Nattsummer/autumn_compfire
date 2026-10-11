@@ -12,7 +12,7 @@ script = ExtResource("1_script")
 z_index = -18
 scale = Vector2(2.035, 2.035)
 scroll_scale = Vector2(0, 1)
-scroll_offset = Vector2(0, -478.82)
+scroll_offset = Vector2(0, -310)
 repeat_size = Vector2(128, 0)
 repeat_times = 40
 
