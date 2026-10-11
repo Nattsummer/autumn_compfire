@@ -1,22 +1,76 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dpsklltr01ui"]
 
 [ext_resource type="Script" path="res://scripts/ui/skill_tree_ui.gd" id="1_skill_tree_script"]
+[ext_resource type="FontFile" uid="uid://3txdjoyec5au" path="res://assets/font/Peaberry-Font-v2.0/Peaberry Font Family/Peaberry Base/Peaberry-Base.otf" id="2_peaberry_base"]
+[ext_resource type="Texture2D" uid="uid://b2446x0npo2ob" path="res://assets/ui/icons/icon_coin.png" id="3_icon_coin"]
+[ext_resource type="Texture2D" uid="uid://bdbvcqc3upife" path="res://assets/ui/icons/icon_hands.png" id="4_icon_hands"]
+[ext_resource type="Texture2D" uid="uid://dobpo3cog2vji" path="res://assets/ui/keys/key_a.png" id="5_key_a"]
+[ext_resource type="Texture2D" uid="uid://b6ctv0tw405bo" path="res://assets/ui/keys/key_d.png" id="6_key_d"]
+[ext_resource type="Texture2D" uid="uid://g164m5xg412s" path="res://assets/ui/keys/key_e.png" id="7_key_e"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_detail"]
-bg_color = Color(0.08, 0.08, 0.1, 0.96)
+[sub_resource type="Theme" id="Theme_skill_tree"]
+default_font = ExtResource("2_peaberry_base")
+default_font_size = 12
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_back"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_separator"]
+color = Color(0.42, 0.3, 0.2, 0.7)
+thickness = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_card"]
+bg_color = Color(0.13, 0.09, 0.07, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.36, 0.24, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+shadow_color = Color(0.02, 0.01, 0.01, 0.6)
+shadow_size = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_icon_frame"]
+bg_color = Color(0.08, 0.05, 0.04, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.38, 0.28, 0.2, 0.8)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_stats"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.07, 0.05, 0.04, 0.85)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
-border_color = Color(0.45, 0.38, 0.3, 0.8)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-shadow_color = Color(0, 0, 0, 0.4)
-shadow_size = 8
+border_color = Color(0.32, 0.22, 0.16, 0.6)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_flat"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_action"]
+bg_color = Color(0.85, 0.48, 0.16, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.75, 0.4, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
 
 [node name="SkillTreeUI" type="CanvasLayer"]
 layer = 10
@@ -29,146 +83,382 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = SubResource("Theme_skill_tree")
 
 [node name="Backdrop" type="ColorRect" parent="RootControl"]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.04, 0.04, 0.06, 0.88)
+color = Color(0.08, 0.05, 0.04, 0.88)
 
-[node name="Margin" type="MarginContainer" parent="RootControl"]
+[node name="TopSection" type="Control" parent="RootControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 76.0
+grow_horizontal = 2
+
+[node name="TopMargin" type="MarginContainer" parent="RootControl/TopSection"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 28
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 28
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 36
 
-[node name="VBox" type="VBoxContainer" parent="RootControl/Margin"]
+[node name="TopVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin"]
 layout_mode = 2
-theme_override_constants/separation = 14
+theme_override_constants/separation = 10
 
-[node name="TopBar" type="HBoxContainer" parent="RootControl/Margin/VBox"]
+[node name="TopBar" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox"]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="RootControl/Margin/VBox/TopBar"]
+[node name="BackButton" type="Button" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.7, 0.7, 0.75, 1)
-theme_override_colors/font_hover_color = Color(1, 0.9, 0.8, 1)
-theme_override_font_sizes/font_size = 12
-theme_override_styles/normal = SubResource("StyleBoxEmpty_flat")
-text = "← BACK [ESC]"
-
-[node name="SpacerLeft" type="Control" parent="RootControl/Margin/VBox/TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="TitleLabel" type="Label" parent="RootControl/Margin/VBox/TopBar"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.92, 0.82, 0.7, 1)
-theme_override_font_sizes/font_size = 14
-text = "TENT WORKBENCH — TOOL EVOLUTION"
-
-[node name="SpacerRight" type="Control" parent="RootControl/Margin/VBox/TopBar"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CoinsLabel" type="Label" parent="RootControl/Margin/VBox/TopBar"]
-layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.76, 0.28, 1)
+theme_override_colors/font_color = Color(0.85, 0.75, 0.65, 1)
+theme_override_colors/font_hover_color = Color(1, 0.92, 0.8, 1)
 theme_override_font_sizes/font_size = 13
-text = "COINS: 0"
+theme_override_styles/normal = SubResource("StyleBoxEmpty_back")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_back")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_back")
+text = "← LEAVE [ESC]"
 
-[node name="Separator" type="HSeparator" parent="RootControl/Margin/VBox"]
+[node name="SpacerLeft" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
 layout_mode = 2
+size_flags_horizontal = 3
 
-[node name="SpacerUpper" type="Control" parent="RootControl/Margin/VBox"]
+[node name="TitleVBox" type="VBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/separation = 1
+alignment = 1
 
-[node name="TrackArea" type="VBoxContainer" parent="RootControl/Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_colors/font_color = Color(0.98, 0.88, 0.65, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 18
+text = "TENT WORKBENCH"
+horizontal_alignment = 1
 
-[node name="RailHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/TrackArea"]
+[node name="SubtitleLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.62, 0.45, 0.9)
+theme_override_font_sizes/font_size = 10
+text = "GEAR CRAFTING & TOOL EVOLUTION"
+horizontal_alignment = 1
+
+[node name="SpacerRight" type="Control" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="CoinHBox" type="HBoxContainer" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar"]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 2
+
+[node name="CoinIcon" type="TextureRect" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox"]
+texture_filter = 1
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_icon_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinsLabel" type="Label" parent="RootControl/TopSection/TopMargin/TopVBox/TopBar/CoinHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.86, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 16
+text = "0"
+
+[node name="Separator" type="HSeparator" parent="RootControl/TopSection/TopMargin/TopVBox"]
+layout_mode = 2
+theme_override_styles/separator = SubResource("StyleBoxLine_separator")
+
+[node name="MiddleSection" type="Control" parent="RootControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.43
+anchor_right = 0.5
+anchor_bottom = 0.43
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TrackArea" type="VBoxContainer" parent="RootControl/MiddleSection"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -280.0
+offset_top = -42.0
+offset_right = 280.0
+offset_bottom = 42.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CategoryHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="CatHands" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.85, 0.58, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "[ I. GATHERING HANDS ]"
+
+[node name="CatDivider1" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.32, 0.25, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "•"
+
+[node name="CatBroom" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.72, 0.42, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "[ II. BAMBOO BROOM ]"
+
+[node name="CatDivider2" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.32, 0.25, 0.8)
+theme_override_font_sizes/font_size = 11
+text = "•"
+
+[node name="CatBlower" type="Label" parent="RootControl/MiddleSection/TrackArea/CategoryHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.78, 0.95, 0.95)
+theme_override_font_sizes/font_size = 11
+text = "[ III. LEAF BLOWER ]"
+
+[node name="RailHBox" type="HBoxContainer" parent="RootControl/MiddleSection/TrackArea"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="SpacerLower" type="Control" parent="RootControl/Margin/VBox"]
-layout_mode = 2
-size_flags_vertical = 3
+[node name="BottomSection" type="Control" parent="RootControl"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -236.0
+grow_horizontal = 2
+grow_vertical = 0
 
-[node name="DetailContainer" type="CenterContainer" parent="RootControl/Margin/VBox"]
-layout_mode = 2
-
-[node name="DetailCard" type="PanelContainer" parent="RootControl/Margin/VBox/DetailContainer"]
-custom_minimum_size = Vector2(520, 160)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_detail")
-
-[node name="CardMargin" type="MarginContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard"]
-layout_mode = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 16
-theme_override_constants/margin_right = 24
+[node name="BottomMargin" type="MarginContainer" parent="RootControl/BottomSection"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_right = 36
 theme_override_constants/margin_bottom = 16
 
-[node name="CardVBox" type="VBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin"]
+[node name="BottomVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="CardHeaderHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+[node name="DetailContainer" type="CenterContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox"]
 layout_mode = 2
 
-[node name="CardTitle" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
+[node name="DetailCard" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer"]
+custom_minimum_size = Vector2(580, 168)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.96, 0.85, 0.65, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_styles/panel = SubResource("StyleBoxFlat_card")
+
+[node name="CardMargin" type="MarginContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 14
+
+[node name="CardHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="IconColumn" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox"]
+custom_minimum_size = Vector2(76, 0)
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="IconFrame" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn"]
+custom_minimum_size = Vector2(58, 58)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBoxFlat_icon_frame")
+
+[node name="DetailIcon" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn/IconFrame"]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(36, 36)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("4_icon_hands")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="DetailTier" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/IconColumn"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.72, 0.5, 1)
+theme_override_font_sizes/font_size = 11
+text = "TIER I"
+horizontal_alignment = 1
+
+[node name="RightVBox" type="VBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="CardHeaderHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+layout_mode = 2
+
+[node name="CardTitle" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.9, 0.75, 1)
+theme_override_font_sizes/font_size = 15
 text = "TOOL NAME"
 
-[node name="Spacer" type="Control" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
+[node name="Spacer" type="Control" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CardStatus" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/CardHeaderHBox"]
+[node name="CardStatus" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/CardHeaderHBox"]
+unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 11
 text = "STATUS"
 
-[node name="CardDesc" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+[node name="CardDesc" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(0.65, 0.65, 0.7, 1)
-theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.8, 0.72, 0.62, 1)
+theme_override_font_sizes/font_size = 12
 text = "Description here"
+autowrap_mode = 2
 
-[node name="CardStats" type="Label" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+[node name="StatsPanel" type="PanelContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.88, 0.88, 0.85, 1)
+theme_override_styles/panel = SubResource("StyleBoxFlat_stats")
+
+[node name="CardStats" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/StatsPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.5, 1)
 theme_override_font_sizes/font_size = 13
 text = "Stats detail"
 
-[node name="ActionHBox" type="HBoxContainer" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox"]
+[node name="ActionHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox"]
 layout_mode = 2
 alignment = 1
 
-[node name="ActionButton" type="Button" parent="RootControl/Margin/VBox/DetailContainer/DetailCard/CardMargin/CardVBox/ActionHBox"]
-custom_minimum_size = Vector2(260, 32)
+[node name="ActionButton" type="Button" parent="RootControl/BottomSection/BottomMargin/BottomVBox/DetailContainer/DetailCard/CardMargin/CardHBox/RightVBox/ActionHBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(280, 32)
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_action")
 text = "UPGRADE"
 
-[node name="FooterHint" type="Label" parent="RootControl/Margin/VBox"]
+[node name="FooterBar" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.5, 0.5, 0.55, 1)
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="NavPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="KeyA" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+texture_filter = 1
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_key_a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="KeyD" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+texture_filter = 1
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("6_key_d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NavLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/NavPromptHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
 theme_override_font_sizes/font_size = 11
-text = "[A / D] Select Node    •    [E] Upgrade Focused Tier    •    [ESC] Exit"
-horizontal_alignment = 1
+text = "Select Tier"
+
+[node name="Dot1" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.28, 0.22, 1)
+theme_override_font_sizes/font_size = 11
+text = "•"
+
+[node name="CraftPromptHBox" type="HBoxContainer" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="KeyE" type="TextureRect" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox"]
+texture_filter = 1
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("7_key_e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CraftLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar/CraftPromptHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
+theme_override_font_sizes/font_size = 11
+text = "Craft Upgrade"
+
+[node name="Dot2" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.28, 0.22, 1)
+theme_override_font_sizes/font_size = 11
+text = "•"
+
+[node name="EscLabel" type="Label" parent="RootControl/BottomSection/BottomMargin/BottomVBox/FooterBar"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.58, 0.5, 1)
+theme_override_font_sizes/font_size = 11
+text = "[ESC] Leave Workbench"

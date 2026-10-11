@@ -39,6 +39,10 @@ func _ready() -> void:
 		_upgrade_marker.visible = false
 		_upgrade_marker.position.y = MARKER_BASE_Y
 
+	if _skill_tree_ui != null:
+		if not _skill_tree_ui.closed.is_connected(_on_skill_tree_closed):
+			_skill_tree_ui.closed.connect(_on_skill_tree_closed)
+
 	_player = get_tree().get_first_node_in_group("player") as Player
 	if _player != null:
 		if not _player.coins_changed.is_connected(_on_player_coins_changed):
@@ -58,6 +62,7 @@ func is_in_range(target_x: float) -> bool:
 
 ## เปิดหน้าต่าง Skill Tree
 func open_skill_tree(player: Player) -> void:
+	_set_hud_visible(false)
 	if _skill_tree_ui != null:
 		_skill_tree_ui.open(player, self)
 
@@ -66,6 +71,19 @@ func open_skill_tree(player: Player) -> void:
 func close_skill_tree() -> void:
 	if _skill_tree_ui != null:
 		_skill_tree_ui.close()
+	_set_hud_visible(true)
+
+
+func _on_skill_tree_closed() -> void:
+	_set_hud_visible(true)
+
+
+func _set_hud_visible(should_show: bool) -> void:
+	var hud: CanvasLayer = get_tree().get_first_node_in_group("hud") as CanvasLayer
+	if hud == null:
+		hud = get_tree().root.find_child("HUD", true, false) as CanvasLayer
+	if hud != null:
+		hud.visible = should_show
 
 
 ## แจ้งสัญญาณการซื้ออัพเกรด
