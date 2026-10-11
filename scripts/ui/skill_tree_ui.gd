@@ -9,7 +9,6 @@ var _tent: Tent = null
 var _selected_index: int = 0
 
 ## โหนดอ้างอิงใน Scene
-@onready var _root_control: Control = $RootControl
 @onready var _coins_label: Label = $RootControl/Margin/VBox/TopBar/CoinsLabel
 @onready var _back_button: Button = $RootControl/Margin/VBox/TopBar/BackButton
 @onready var _rail_hbox: HBoxContainer = $RootControl/Margin/VBox/TrackArea/RailHBox
@@ -364,7 +363,7 @@ func _execute_upgrade_selected() -> void:
 	_player.apply_upgrade_step(step)
 	_player.upgrade_step += 1
 
-	_tent.upgrade_purchased.emit(step, String(data["title"]), cost)
+	_tent.notify_upgrade_purchased(step, String(data["title"]), cost)
 	_tent.update_label_display(_player.upgrade_step, _player.coins)
 	upgrade_completed.emit(step, String(data["title"]))
 

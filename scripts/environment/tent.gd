@@ -48,6 +48,11 @@ func close_skill_tree() -> void:
 		_skill_tree_ui.close()
 
 
+## แจ้งสัญญาณการซื้ออัพเกรด
+func notify_upgrade_purchased(step: int, title: String, cost: int) -> void:
+	upgrade_purchased.emit(step, title, cost)
+
+
 ## ตรวจสอบว่าหน้าต่าง Skill Tree กำลังเปิดอยู่หรือไม่
 func is_skill_tree_open() -> bool:
 	return _skill_tree_ui != null and _skill_tree_ui.visible

@@ -1,30 +1,395 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://com1wkqf1x18c"]
 
-[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player_script"]
+[ext_resource type="Script" uid="uid://dg5pbs5v0uwmw" path="res://scripts/player/player.gd" id="1_player_script"]
+[ext_resource type="Texture2D" uid="uid://cywwf4d0hxvcw" path="res://assets/player/player_hands_sheet.png" id="2_hands_tex"]
+[ext_resource type="Texture2D" uid="uid://b0qbga587i06y" path="res://assets/player/player_broom_sheet.png" id="3_broom_tex"]
+[ext_resource type="Texture2D" uid="uid://b0dayqtgo5yjp" path="res://assets/player/player_blower_sheet.png" id="4_blower_tex"]
+[ext_resource type="Texture2D" uid="uid://b8ca1mk8ent8s" path="res://assets/vfx/leaf_particle.png" id="5_leaf_texture"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
-size = Vector2(28, 64)
+size = Vector2(16, 32)
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="AtlasTexture" id="Atlas_bl_8"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_9"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_0"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_1"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_2"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_3"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_4"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_5"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_6"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_bl_7"]
+atlas = ExtResource("4_blower_tex")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_0"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_1"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_2"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_3"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_8"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_9"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_10"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(320, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_11"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(352, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_4"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_5"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_6"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_br_7"]
+atlas = ExtResource("3_broom_tex")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_8"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(256, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_9"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(288, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_0"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_1"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_2"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_3"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_4"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_5"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_6"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="Atlas_h_7"]
+atlas = ExtResource("2_hands_tex")
+region = Rect2(224, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_player"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_9")
+}],
+"loop": 1,
+"name": &"blower_blow",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_3")
+}],
+"loop": 1,
+"name": &"blower_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_bl_7")
+}],
+"loop": 1,
+"name": &"blower_walk",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_br_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_3")
+}],
+"loop": 1,
+"name": &"broom_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_br_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_9")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_10")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_11")
+}],
+"loop": 0,
+"name": &"broom_sweep",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_br_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_br_7")
+}],
+"loop": 1,
+"name": &"broom_walk",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_h_8")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_9")
+}],
+"loop": 0,
+"name": &"hands_gather",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_h_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_3")
+}],
+"loop": 1,
+"name": &"hands_idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Atlas_h_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_5")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_6")
+}, {
+"duration": 1.0,
+"texture": SubResource("Atlas_h_7")
+}],
+"loop": 1,
+"name": &"hands_walk",
+"speed": 8.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_75vfm"]
+offsets = PackedFloat32Array(0.29655173, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="Gradient" id="Gradient_sweep_leaves"]
+interpolation_mode = 1
+offsets = PackedFloat32Array(0, 0.2, 0.65, 1)
+colors = PackedColorArray(0.98, 0.82, 0.28, 1, 0.95, 0.52, 0.12, 1, 0.82, 0.22, 0.1, 1, 0.65, 0.18, 0.1, 0)
+
+[sub_resource type="Gradient" id="Gradient_sweep_wind"]
+offsets = PackedFloat32Array(0, 0.25, 0.75, 1)
+colors = PackedColorArray(1, 1, 1, 0.9, 0.85, 0.95, 1, 0.7, 0.75, 0.9, 1, 0.35, 0.7, 0.85, 1, 0)
+
+[node name="Player" type="CharacterBody2D" unique_id=190470892]
 script = ExtResource("1_player_script")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -32)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=480434213]
+position = Vector2(0, -16)
 shape = SubResource("RectangleShape2D_player")
 
-[node name="PlaceholderVisual" type="ColorRect" parent="."]
-offset_left = -14.0
-offset_top = -64.0
-offset_right = 14.0
-offset_bottom = 0.0
-color = Color(0.25, 0.55, 0.9, 1)
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=71613036]
+position = Vector2(0, -11)
+sprite_frames = SubResource("SpriteFrames_player")
+animation = &"blower_blow"
+autoplay = "hands_idle"
 
-[node name="StatusLabel" type="Label" parent="."]
+[node name="StatusLabel" type="Label" parent="." unique_id=1053201519]
 offset_left = -90.0
-offset_top = -110.0
+offset_top = -60.0
 offset_right = 90.0
-offset_bottom = -70.0
-theme_override_font_sizes/font_size = 12
+offset_bottom = -34.0
+theme_override_font_sizes/font_size = 11
 text = "Coins: 0 | Leaves: 0/2"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="SweepLeafParticles" type="CPUParticles2D" parent="." unique_id=981248102]
+position = Vector2(4.5, -1)
+emitting = false
+amount = 16
+texture = ExtResource("5_leaf_texture")
+lifetime = 0.45
+one_shot = true
+explosiveness = 0.9
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector2(1, -0.3)
+gravity = Vector2(0, 90)
+initial_velocity_min = 45.0
+initial_velocity_max = 95.0
+angular_velocity_min = -200.0
+angular_velocity_max = 200.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 0.5
+scale_amount_max = 0.75
+color_ramp = SubResource("Gradient_75vfm")
+color_initial_ramp = SubResource("Gradient_sweep_leaves")
+
+[node name="SweepWindParticles" type="CPUParticles2D" parent="." unique_id=981248103]
+position = Vector2(4.5, -1)
+emitting = false
+amount = 10
+lifetime = 0.32
+one_shot = true
+explosiveness = 0.85
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector2(1, -0.2)
+gravity = Vector2(0, 40)
+initial_velocity_min = 55.0
+initial_velocity_max = 100.0
+scale_amount_min = 0.5
+scale_amount_max = 0.75
+color_ramp = SubResource("Gradient_sweep_wind")
+
+[node name="BlowWindParticles" type="CPUParticles2D" parent="." unique_id=981248104]
+position = Vector2(4.5, -1)
+emitting = false
+amount = 14
+lifetime = 0.28
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector2(1, 0.2)
+spread = 15.0
+gravity = Vector2(0, 20)
+initial_velocity_min = 90.0
+initial_velocity_max = 140.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_sweep_wind")
+
+[node name="BlowLeavesParticles" type="CPUParticles2D" parent="." unique_id=981248105]
+position = Vector2(4.5, -1)
+emitting = false
+amount = 16
+texture = ExtResource("5_leaf_texture")
+lifetime = 0.38
+emission_shape = 1
+emission_sphere_radius = 1.0
+direction = Vector2(1, -0.1)
+spread = 22.0
+gravity = Vector2(0, 60)
+initial_velocity_min = 80.0
+initial_velocity_max = 130.0
+angular_velocity_min = -220.0
+angular_velocity_max = 220.0
+angle_min = -180.0
+angle_max = 180.0
+scale_amount_min = 0.5
+scale_amount_max = 0.75
+color_ramp = SubResource("Gradient_75vfm")
+color_initial_ramp = SubResource("Gradient_sweep_leaves")

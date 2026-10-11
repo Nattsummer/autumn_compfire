@@ -43,13 +43,14 @@ var is_burning: bool = false
 ## สถานะไฟลามไหม้ทั้งป่า (End Game)
 var is_wildfire: bool = false
 
-@onready var _fire_core: ColorRect = $FireCore
+@onready var _fire_vfx: Node2D = $FireVFX
+@onready var _flame_particles: CPUParticles2D = $FireVFX/FlameParticles
+@onready var _ember_particles: CPUParticles2D = $FireVFX/EmberParticles
+@onready var _smoke_particles: CPUParticles2D = $FireVFX/SmokeParticles
 @onready var _label: Label = $Label
 
 
 func _ready() -> void:
-	if _fire_core != null:
-		_fire_core.pivot_offset = Vector2(12.0, 30.0)
 	_update_visuals()
 
 
@@ -123,12 +124,30 @@ func is_in_range(target_x: float) -> bool:
 
 ## อัปเดตขนาดและข้อความของกองไฟตามปริมาณเชื้อเพลิงและระยะเวลา
 func _update_visuals() -> void:
-	if _fire_core != null:
+	if _fire_vfx != null:
 		var extra: float = heat_level - min_heat_level
-		# สเกลไฟจะขยายตั้งแต่ 1.0x จนถึง 15.0x เมื่อเกิด Wildfire
-		var max_scale: float = 16.0 if is_wildfire else 4.0
-		var scale_factor: float = clampf(1.0 + (extra * 0.04), 1.0, max_scale)
-		_fire_core.scale = Vector2(scale_factor, scale_factor)
+		# ล็อคสเกลของโหนดหลักไว้ที่ (1, 1) เพื่อไม่ให้ความเร็วและการพุ่ง (Velocity) ถูกคูณเพิ่ม
+		_fire_vfx.scale = Vector2(1.0, 1.0)
+
+		# ปรับขนาดอนุภาคเปลวไฟและสเกลความเร็วการพุ่ง (Velocity) ตามใบไม้ที่เติม
+		var vel_factor: float = clampf(1.0 + (extra * 0.03), 1.0, 4.0)
+		if _flame_particles != null:
+			var flame_size: float = clampf(4.0 + (extra * 0.08), 4.0, 100.0)
+			_flame_particles.scale_amount_min = flame_size
+			_flame_particles.scale_amount_max = flame_size
+			_flame_particles.initial_velocity_min = 25.0 * vel_factor
+			_flame_particles.initial_velocity_max = 45.0 * vel_factor
+			_flame_particles.speed_scale = 1.0
+
+		if _ember_particles != null:
+			_ember_particles.initial_velocity_min = 25.0 * vel_factor
+			_ember_particles.initial_velocity_max = 48.0 * vel_factor
+			_ember_particles.speed_scale = 1.0
+
+		if _smoke_particles != null:
+			_smoke_particles.initial_velocity_min = 10.0 * vel_factor
+			_smoke_particles.initial_velocity_max = 20.0 * vel_factor
+			_smoke_particles.speed_scale = 1.0
 
 	if _label != null and not is_wildfire:
 		var mult: float = get_reward_multiplier()

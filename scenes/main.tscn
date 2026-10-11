@@ -1,9 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bv5ow8qpvgx8e"]
 
-[ext_resource type="Script" path="res://scripts/main.gd" id="1_main_script"]
-[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="1_player_scene"]
+[ext_resource type="Script" uid="uid://ddwdeolc5xor1" path="res://scripts/main.gd" id="1_main_script"]
+[ext_resource type="PackedScene" uid="uid://com1wkqf1x18c" path="res://scenes/player/player.tscn" id="1_player_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
-[ext_resource type="PackedScene" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
+[ext_resource type="PackedScene" uid="uid://fnx75iplm1gv" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
 
@@ -16,10 +16,10 @@ size = Vector2(32, 1200)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_right_wall"]
 size = Vector2(32, 1200)
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=1913619799]
 script = ExtResource("1_main_script")
 
-[node name="SkyBackground" type="ColorRect" parent="."]
+[node name="SkyBackground" type="ColorRect" parent="." unique_id=749941005]
 z_index = -20
 offset_left = -200.0
 offset_top = -200.0
@@ -27,81 +27,82 @@ offset_right = 3800.0
 offset_bottom = 700.0
 color = Color(0.12, 0.14, 0.22, 1)
 
-[node name="Environment" type="Node2D" parent="."]
+[node name="Environment" type="Node2D" parent="." unique_id=148177899]
 
-[node name="Platform" type="StaticBody2D" parent="Environment"]
+[node name="Platform" type="StaticBody2D" parent="Environment" unique_id=378627260]
 position = Vector2(0, 540)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/Platform" unique_id=1073822421]
 position = Vector2(1750, 20)
 shape = SubResource("RectangleShape2D_platform")
 
-[node name="PlaceholderVisual" type="ColorRect" parent="Environment/Platform"]
+[node name="PlaceholderVisual" type="ColorRect" parent="Environment/Platform" unique_id=570170708]
 offset_right = 3500.0
 offset_bottom = 40.0
 color = Color(0.22, 0.26, 0.19, 1)
 
-[node name="LeftWall" type="StaticBody2D" parent="Environment"]
+[node name="LeftWall" type="StaticBody2D" parent="Environment" unique_id=348773154]
 position = Vector2(0, 540)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/LeftWall" unique_id=799083686]
 position = Vector2(-16, -200)
 shape = SubResource("RectangleShape2D_left_wall")
 
-[node name="RightWall" type="StaticBody2D" parent="Environment"]
+[node name="RightWall" type="StaticBody2D" parent="Environment" unique_id=1286641170]
 position = Vector2(3500, 540)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/RightWall" unique_id=452822984]
 position = Vector2(16, -200)
 shape = SubResource("RectangleShape2D_right_wall")
 
-[node name="LeafGrid" parent="Environment" groups=["leaf_grid"] instance=ExtResource("5_leaf_grid_scene")]
+[node name="LeafGrid" parent="Environment" unique_id=775733339 groups=["leaf_grid"] instance=ExtResource("5_leaf_grid_scene")]
 position = Vector2(0, 540)
 
-[node name="CampSite" type="Node2D" parent="Environment"]
+[node name="CampSite" type="Node2D" parent="Environment" unique_id=41091847]
 z_index = -2
 
-[node name="Tent" parent="Environment/CampSite" instance=ExtResource("2_tent_scene")]
+[node name="Tent" parent="Environment/CampSite" unique_id=1263946757 instance=ExtResource("2_tent_scene")]
 position = Vector2(65, 540)
 
-[node name="Campfire" parent="Environment/CampSite" instance=ExtResource("3_campfire_scene")]
+[node name="Campfire" parent="Environment/CampSite" unique_id=1820126236 instance=ExtResource("3_campfire_scene")]
 position = Vector2(230, 540)
 
-[node name="ForestTrees" type="Node2D" parent="Environment"]
+[node name="ForestTrees" type="Node2D" parent="Environment" unique_id=1448068609]
 z_index = -5
 
-[node name="Tree1" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree1" parent="Environment/ForestTrees" unique_id=895131436 instance=ExtResource("4_tree_scene")]
 position = Vector2(450, 540)
 
-[node name="Tree2" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree2" parent="Environment/ForestTrees" unique_id=2139014883 instance=ExtResource("4_tree_scene")]
 position = Vector2(750, 540)
 
-[node name="Tree3" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree3" parent="Environment/ForestTrees" unique_id=1234761727 instance=ExtResource("4_tree_scene")]
 position = Vector2(1100, 540)
 
-[node name="Tree4" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree4" parent="Environment/ForestTrees" unique_id=1134493377 instance=ExtResource("4_tree_scene")]
 position = Vector2(1450, 540)
 
-[node name="Tree5" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree5" parent="Environment/ForestTrees" unique_id=1042886975 instance=ExtResource("4_tree_scene")]
 position = Vector2(1850, 540)
 
-[node name="Tree6" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree6" parent="Environment/ForestTrees" unique_id=716299316 instance=ExtResource("4_tree_scene")]
 position = Vector2(2250, 540)
 
-[node name="Tree7" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree7" parent="Environment/ForestTrees" unique_id=1900318794 instance=ExtResource("4_tree_scene")]
 position = Vector2(2650, 540)
 
-[node name="Tree8" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree8" parent="Environment/ForestTrees" unique_id=1987942201 instance=ExtResource("4_tree_scene")]
 position = Vector2(3050, 540)
 
-[node name="Tree9" parent="Environment/ForestTrees" instance=ExtResource("4_tree_scene")]
+[node name="Tree9" parent="Environment/ForestTrees" unique_id=1930113799 instance=ExtResource("4_tree_scene")]
 position = Vector2(3350, 540)
 
-[node name="Player" parent="." instance=ExtResource("1_player_scene")]
+[node name="Player" parent="." unique_id=1395849955 instance=ExtResource("1_player_scene")]
 position = Vector2(145, 540)
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
-position = Vector2(0, -60)
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1763098209]
+position = Vector2(0, -25)
+zoom = Vector2(2, 2)
 limit_left = 0
 limit_right = 3500
 position_smoothing_enabled = true
@@ -110,10 +111,10 @@ drag_horizontal_enabled = true
 drag_left_margin = 0.1
 drag_right_margin = 0.1
 
-[node name="EndGameUI" type="CanvasLayer" parent="."]
+[node name="EndGameUI" type="CanvasLayer" parent="." unique_id=1463716396]
 visible = false
 
-[node name="Overlay" type="ColorRect" parent="EndGameUI"]
+[node name="Overlay" type="ColorRect" parent="EndGameUI" unique_id=1794400775]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -121,7 +122,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.08, 0.02, 0.02, 0.82)
 
-[node name="CenterBox" type="VBoxContainer" parent="EndGameUI"]
+[node name="CenterBox" type="VBoxContainer" parent="EndGameUI" unique_id=2012148315]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -135,13 +136,15 @@ grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
 
-[node name="Title" type="Label" parent="EndGameUI/CenterBox"]
+[node name="Title" type="Label" parent="EndGameUI/CenterBox" unique_id=833438037]
+layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.35, 0.15, 1)
 theme_override_font_sizes/font_size = 32
 text = "THE FOREST IS ABLAZE!"
 horizontal_alignment = 1
 
-[node name="Subtitle" type="Label" parent="EndGameUI/CenterBox"]
+[node name="Subtitle" type="Label" parent="EndGameUI/CenterBox" unique_id=329790258]
+layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.85, 0.8, 1)
 theme_override_font_sizes/font_size = 18
 text = "You fueled the flame until the entire autumn forest caught fire.

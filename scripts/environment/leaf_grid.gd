@@ -28,6 +28,15 @@ var is_tree_zone: Array[bool] = []
 ## ตัวจับเวลาจำกัดการวาดใหม่ (Redraw) เพื่อประสิทธิภาพ
 var _redraw_timer: float = 0.0
 
+## สไปรต์กองใบไม้ 5 ระดับ (Tiers 0 - 4)
+const TIER_TEXTURES: Array[Texture2D] = [
+	preload("res://assets/environment/leaf_piles/pile_tier_0.png"),
+	preload("res://assets/environment/leaf_piles/pile_tier_1.png"),
+	preload("res://assets/environment/leaf_piles/pile_tier_2.png"),
+	preload("res://assets/environment/leaf_piles/pile_tier_3.png"),
+	preload("res://assets/environment/leaf_piles/pile_tier_4.png")
+]
+
 
 func _ready() -> void:
 	cells.resize(total_cells)
@@ -142,7 +151,7 @@ func move_leaves(from_x: float, to_x: float, max_amount: float = 5.0) -> float:
 	return moved
 
 
-## วาดแถบสีและกองใบไม้บนพื้นดินตามความหนาแน่นของใบไม้ (ปรับสเกลรองรับ 0 - 300 ใบ)
+## วาดกองใบไม้บนพื้นดินตามระดับ Tier ของจำนวนใบไม้ (สเปก 5 Tiers ที่สเกล 1x)
 func _draw() -> void:
 	for i: int in range(total_cells):
 		var count: float = cells[i]
@@ -150,30 +159,27 @@ func _draw() -> void:
 			continue
 
 		var x_pos: float = float(i) * cell_size
-		var ground_y: float = 0.0 # Origin ของโหนดนี้อยู่ที่ระดับพื้นดิน
 
-		# สเกลอัตราส่วนความสูงตามช่วง 0 ถึง 300 ใบ (ใช้ Curve 0.8 เพื่อให้กองเล็ก 1-15 ใบก็ยังสังเกตเห็นได้)
-		var ratio: float = clampf(count / 300.0, 0.0, 1.0)
-		var pile_height: float = lerpf(3.0, 48.0, pow(ratio, 0.8))
-
-		# คำนวณสีตามระดับปริมาณ 0 - 300 ใบ
-		var fill_color: Color
-		if count < 15.0:
-			# 0 - 15 ใบ: สีเหลืองทองระเรื่อ (เศษใบไม้ประปราย)
-			var alpha: float = clampf(count / 15.0, 0.35, 0.65)
-			fill_color = Color(0.92, 0.78, 0.25, alpha)
-		elif count < 60.0:
-			# 15 - 60 ใบ: สีส้มอบอุ่น (เริ่มเป็นกองย่อม)
-			var t: float = (count - 15.0) / 45.0
-			fill_color = Color(0.96, 0.52, 0.12, lerpf(0.65, 0.85, t))
-		elif count < 150.0:
-			# 60 - 150 ใบ: สีแดงส้ม Autumn Amber (กองขนาดกลาง)
-			var t: float = (count - 60.0) / 90.0
-			fill_color = Color(0.88, 0.28, 0.12, lerpf(0.85, 0.95, t))
+		# เลือก Tier ตามสเปกใน ASSET_REQUIREMENTS.md:
+		# Tier 0: 1 - 5 ใบ
+		# Tier 1: 6 - 20 ใบ
+		# Tier 2: 21 - 60 ใบ
+		# Tier 3: 61 - 150 ใบ
+		# Tier 4: 151 - 300+ ใบ
+		var tex: Texture2D = null
+		if count < 6.0:
+			tex = TIER_TEXTURES[0]
+		elif count < 21.0:
+			tex = TIER_TEXTURES[1]
+		elif count < 61.0:
+			tex = TIER_TEXTURES[2]
+		elif count < 151.0:
+			tex = TIER_TEXTURES[3]
 		else:
-			# 150 - 300+ ใบ: สีแดงเข้ม Crimson / Burgundy (กองใหญ่หนาแน่นมาก)
-			var t: float = clampf((count - 150.0) / 150.0, 0.0, 1.0)
-			fill_color = Color(0.68, 0.12, 0.10, lerpf(0.95, 1.0, t))
+			tex = TIER_TEXTURES[4]
 
-		# วาดแท่งแทนความหนาแน่นของกองใบไม้บนพื้นดิน เรียงต่อกันเป็นเส้นตรงแนวนอนแบบไร้รอยต่อ
-		draw_rect(Rect2(x_pos, ground_y - pile_height, cell_size, pile_height), fill_color)
+		if tex != null:
+			# จัดวางฐานกองใบไม้ขนาด 64x64 สเกล 1x กึ่งกลางช่องแนบผิวดิน (y = 0)
+			var offset_x: float = (cell_size - 64.0) * 0.5
+			var tex_rect: Rect2 = Rect2(x_pos + offset_x, -48.0, 64.0, 64.0)
+			draw_texture_rect(tex, tex_rect, false)

@@ -65,6 +65,14 @@ var _tent: Tent = null
 
 ## โหนด Label แสดงสถานะเงินและใบไม้
 @onready var _status_label: Label = $StatusLabel
+@onready var _animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var _sweep_leaf_particles: CPUParticles2D = $SweepLeafParticles
+@onready var _sweep_wind_particles: CPUParticles2D = $SweepWindParticles
+@onready var _blow_wind_particles: CPUParticles2D = $BlowWindParticles
+@onready var _blow_leaves_particles: CPUParticles2D = $BlowLeavesParticles
+
+## ตัวจับเวลาแอนิเมชัน One-shot
+var _action_anim_timer: float = 0.0
 
 
 func _ready() -> void:
@@ -111,6 +119,7 @@ func cycle_unlocked_tool() -> void:
 	current_tool = unlocked_tools[next_idx]
 	tool_changed.emit(current_tool)
 	_update_ui()
+	_update_animations(0.0)
 
 
 func _physics_process(delta: float) -> void:
@@ -123,12 +132,14 @@ func _physics_process(delta: float) -> void:
 		velocity.x = 0.0
 		_apply_gravity(delta)
 		move_and_slide()
+		_update_animations(delta)
 		return
 
 	_apply_gravity(delta)
 	_handle_movement()
 	_handle_interactions(delta)
 	move_and_slide()
+	_update_animations(delta)
 
 
 func _apply_gravity(delta: float) -> void:
@@ -175,10 +186,12 @@ func _handle_interactions(delta: float) -> void:
 	# 2. ปฏิสัมพันธ์ตามประเภทไอเทมที่กำลังถือ
 	match current_tool:
 		ToolType.BROOM:
+			_update_blower_vfx(false, false)
 			_handle_broom_interaction()
 		ToolType.BLOWER:
 			_handle_blower_interaction(delta)
 		ToolType.HANDS:
+			_update_blower_vfx(false, false)
 			_handle_hands_interaction()
 
 
@@ -223,6 +236,8 @@ func apply_upgrade_step(step: int) -> void:
 			blower_level = 3
 			blower_rate = _tent.blower_rates[2] if _tent != null else 200.0
 
+	_update_animations(0.0)
+
 
 ## การทำงานเมื่อถือไม้กวาด (Broom) พร้อมระบบคูลดาวน์
 func _handle_broom_interaction() -> void:
@@ -249,6 +264,8 @@ func _handle_broom_interaction() -> void:
 			_set_prompt("[Broom] Coins: %d\n[E] Sweep into Fire (+%dG)" % [coins, est_reward])
 
 			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("broom_sweep", 0.4)
+				_trigger_sweep_hit_vfx(sweep_amount)
 				var harvested: float = _leaf_grid.harvest_leaves_float(global_position.x, max_broom_sweep)
 				var burn_count: int = int(round(harvested))
 				if burn_count > 0:
@@ -260,33 +277,48 @@ func _handle_broom_interaction() -> void:
 				_broom_cooldown_timer = broom_cooldown
 		else:
 			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves near fire)" % [broom_level, coins])
+			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("broom_sweep", 0.4)
+				_trigger_sweep_wind_vfx()
+				_broom_cooldown_timer = broom_cooldown
 	else:
 		if available >= 0.5:
+			var sweep_amount: float = minf(available, max_broom_sweep)
 			_set_prompt("[Broom Lv.%d] Coins: %d\n[E] Sweep %s (Max %.0f)" % [broom_level, coins, arrow, max_broom_sweep])
 			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("broom_sweep", 0.4)
+				_trigger_sweep_hit_vfx(sweep_amount)
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, max_broom_sweep)
 				_broom_cooldown_timer = broom_cooldown
 		else:
 			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves to sweep)" % [broom_level, coins])
+			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("broom_sweep", 0.4)
+				_trigger_sweep_wind_vfx()
+				_broom_cooldown_timer = broom_cooldown
 
 
 ## การทำงานเมื่อถือเครื่องเป่าลม (Blower)
 func _handle_blower_interaction(delta: float) -> void:
 	if _leaf_grid == null:
+		_update_blower_vfx(false, false)
 		return
 
 	var available: float = _leaf_grid.get_leaf_count_at(global_position.x)
 	var sweep_target_x: float = global_position.x + (float(facing_direction) * _leaf_grid.cell_size)
 	var arrow: String = "->" if facing_direction > 0 else "<-"
 	var blow_amount: float = blower_rate * delta
+	var is_holding_blow: bool = Input.is_action_pressed("interact") and not (_tent != null and _tent.is_in_range(global_position.x))
 
 	# ตรวจสอบว่าเป่าเข้าไปในระยะของกองไฟหรือไม่
 	var blowing_into_fire: bool = _campfire != null and _campfire.is_in_range(sweep_target_x)
 
-	if blowing_into_fire:
-		if available >= 0.1:
-			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow into Fire (%.0f/s)" % [blower_level, coins, blower_rate])
-			if Input.is_action_pressed("interact"):
+	if is_holding_blow:
+		# มีการเป่าลมเกิดขึ้น: ถ้ามีใบไม้ให้เป่าใบไม้ด้วย ถ้าไม่มีให้เป่าลมเปล่า
+		_update_blower_vfx(true, available >= 0.1)
+
+		if blowing_into_fire:
+			if available >= 0.1:
 				var harvested: float = _leaf_grid.harvest_leaves_float(global_position.x, blow_amount)
 				_leaf_burn_buffer += harvested
 				# เมื่อสะสมครบจำนวนเต็มให้ส่งเข้ากองไฟและมอบเหรียญรางวัล
@@ -299,12 +331,20 @@ func _handle_blower_interaction(delta: float) -> void:
 					if _tent != null:
 						_tent.update_label_display(upgrade_step, coins)
 		else:
+			if available >= 0.1:
+				_leaf_grid.move_leaves(global_position.x, sweep_target_x, blow_amount)
+	else:
+		_update_blower_vfx(false, false)
+
+	# อัปเดตข้อความ Prompt
+	if blowing_into_fire:
+		if available >= 0.1:
+			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow into Fire (%.0f/s)" % [blower_level, coins, blower_rate])
+		else:
 			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves near fire)" % [blower_level, coins])
 	else:
 		if available >= 0.1:
 			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow %s (%.0f/s)" % [blower_level, coins, arrow, blower_rate])
-			if Input.is_action_pressed("interact"):
-				_leaf_grid.move_leaves(global_position.x, sweep_target_x, blow_amount)
 		else:
 			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves to blow)" % [blower_level, coins])
 
@@ -320,6 +360,7 @@ func _handle_hands_interaction() -> void:
 			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Feed (+%dG x%.1f)" % [hands_level, coins, carried_leaves, max_hand_capacity, est_reward, mult])
 
 			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("hands_gather", 0.35)
 				var reward: int = _campfire.add_leaves(carried_leaves)
 				coins += reward
 				coins_changed.emit(coins)
@@ -340,6 +381,7 @@ func _handle_hands_interaction() -> void:
 		elif can_gather:
 			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Pick Leaf" % [hands_level, coins, carried_leaves, max_hand_capacity])
 			if Input.is_action_just_pressed("interact"):
+				_play_action_animation("hands_gather", 0.35)
 				var gathered: int = _leaf_grid.harvest_leaves(global_position.x, 1)
 				if gathered > 0:
 					carried_leaves += gathered
@@ -374,3 +416,102 @@ func _update_ui() -> void:
 func _set_prompt(text: String) -> void:
 	if _status_label != null:
 		_status_label.text = text
+
+
+func _get_tool_anim_prefix() -> String:
+	match current_tool:
+		ToolType.HANDS:
+			return "hands"
+		ToolType.BROOM:
+			return "broom"
+		ToolType.BLOWER:
+			return "blower"
+	return "hands"
+
+
+func _play_action_animation(anim_name: String, duration: float) -> void:
+	_action_anim_timer = duration
+	if _animated_sprite != null:
+		_animated_sprite.play(anim_name)
+
+
+## แสดงผลเอฟเฟกต์กวาดโดนใบไม้ (Sweep Hit Leaf Particles)
+func _trigger_sweep_hit_vfx(leaves_count: float = 5.0) -> void:
+	var dir_x: float = float(facing_direction)
+	if _sweep_leaf_particles != null:
+		_sweep_leaf_particles.position.x = 10.0 * dir_x
+		_sweep_leaf_particles.direction = Vector2(dir_x, -0.3)
+		# ปรับจำนวนเม็ดใบไม้ตามจำนวนที่กวาดจริง
+		var particle_count: int = clampi(int(round(leaves_count * 1.5)), 8, 36)
+		_sweep_leaf_particles.amount = particle_count
+		_sweep_leaf_particles.restart()
+		_sweep_leaf_particles.emitting = true
+
+	if _sweep_wind_particles != null:
+		_sweep_wind_particles.position.x = 10.0 * dir_x
+		_sweep_wind_particles.direction = Vector2(dir_x, -0.2)
+		_sweep_wind_particles.restart()
+		_sweep_wind_particles.emitting = true
+
+
+## แสดงผลเอฟเฟกต์กวาดลมเปล่า (Sweep Wind Particles)
+func _trigger_sweep_wind_vfx() -> void:
+	var dir_x: float = float(facing_direction)
+	if _sweep_wind_particles != null:
+		_sweep_wind_particles.position.x = 10.0 * dir_x
+		_sweep_wind_particles.direction = Vector2(dir_x, -0.2)
+		_sweep_wind_particles.restart()
+		_sweep_wind_particles.emitting = true
+
+
+## จัดการแสดงผล Particle ของเครื่องเป่าลม (Blower VFX)
+func _update_blower_vfx(wind_active: bool, leaves_active: bool) -> void:
+	var dir_x: float = float(facing_direction)
+
+	if _blow_wind_particles != null:
+		if wind_active:
+			_blow_wind_particles.position.x = 10.0 * dir_x
+			_blow_wind_particles.direction = Vector2(dir_x, 0.2)
+			if not _blow_wind_particles.emitting:
+				_blow_wind_particles.emitting = true
+		else:
+			if _blow_wind_particles.emitting:
+				_blow_wind_particles.emitting = false
+
+	if _blow_leaves_particles != null:
+		if leaves_active:
+			_blow_leaves_particles.position.x = 12.0 * dir_x
+			_blow_leaves_particles.direction = Vector2(dir_x, -0.1)
+			# ปรับปริมาณใบไม้ตามเลเวลของเครื่องเป่าลม (Lv.1: 14, Lv.2: 20, Lv.3: 28)
+			var base_amount: int = 14 + (blower_level - 1) * 7
+			if _blow_leaves_particles.amount != base_amount:
+				_blow_leaves_particles.amount = base_amount
+			if not _blow_leaves_particles.emitting:
+				_blow_leaves_particles.emitting = true
+		else:
+			if _blow_leaves_particles.emitting:
+				_blow_leaves_particles.emitting = false
+
+
+func _update_animations(delta: float) -> void:
+	if _animated_sprite == null:
+		return
+
+	# พลิกทิศทางตัวละครตามทิศทางการเดิน
+	_animated_sprite.flip_h = (facing_direction < 0)
+
+	# หากกำลังเล่นแอนิเมชัน One-shot อยู่ (เช่น ก้มหยิบ, กวาดไม้กวาด) ให้นับถอยหลังต่อจนจบ
+	if _action_anim_timer > 0.0:
+		_action_anim_timer = maxf(0.0, _action_anim_timer - delta)
+		return
+
+	# แอนิเมชันเป่าลมต่อเนื่องเมื่อกดปุ่มค้าง
+	if current_tool == ToolType.BLOWER and Input.is_action_pressed("interact") and not (_tent != null and _tent.is_in_range(global_position.x)):
+		if _animated_sprite.animation != &"blower_blow":
+			_animated_sprite.play("blower_blow")
+		return
+
+	var prefix: String = _get_tool_anim_prefix()
+	var target_anim: String = "%s_walk" % prefix if absf(velocity.x) > 5.0 else "%s_idle" % prefix
+	if _animated_sprite.animation != StringName(target_anim):
+		_animated_sprite.play(target_anim)
