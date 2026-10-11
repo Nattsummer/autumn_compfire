@@ -59,12 +59,12 @@
 - [x] `vfx_blow_wind.png` (ละอองลมเป่าลมเปล่า)
 
 ### 6. UI & ปุ่มกด (HUD / Icons)
-- [ ] `icon_hands.png` (ไอคอนมือเปล่า)
-- [ ] `icon_broom.png` (ไอคอนไม้กวาด)
-- [ ] `icon_blower.png` (ไอคอนเครื่องเป่าลม)
-- [ ] `icon_coin.png` (ไอคอนเหรียญทอง)
-- [ ] `icon_leaf.png` (ไอคอนใบไม้)
-- [ ] ปุ่มกดคีย์บอร์ด (`key_e.png`, `key_a.png`, `key_d.png`, `key_space.png`)
+- [x] `icon_hands.png` (ไอคอนมือเปล่า)
+- [x] `icon_broom.png` (ไอคอนไม้กวาด)
+- [x] `icon_blower.png` (ไอคอนเครื่องเป่าลม)
+- [x] `icon_coin.png` (ไอคอนเหรียญทอง)
+- [x] `icon_leaf.png` (ไอคอนใบไม้)
+- [x] ปุ่มกดคีย์บอร์ด (`key_e.png`, `key_a.png`, `key_d.png`, `key_space.png`)
 
 ---
 

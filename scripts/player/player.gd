@@ -4,6 +4,7 @@ extends CharacterBody2D
 signal leaves_changed(current: int, maximum: int)
 signal coins_changed(new_amount: int)
 signal tool_changed(new_tool: ToolType)
+signal prompt_updated(key_code: String, text: String, is_visible: bool)
 
 enum ToolType {
 	HANDS,
@@ -177,8 +178,7 @@ func _handle_interactions(delta: float) -> void:
 
 	# 1. ปฏิสัมพันธ์กับเต็นท์ (Tent) - เปิดหน้าต่าง Skill Tree
 	if _tent != null and _tent.is_in_range(global_position.x):
-		var switch_hint: String = " | [Q] Switch (%s)" % _get_tool_name(current_tool) if unlocked_tools.size() > 1 else ""
-		_set_prompt("[Tent] [E] Open Skill Tree%s" % switch_hint)
+		_set_prompt("[E] Open Upgrades")
 		if Input.is_action_just_pressed("interact"):
 			_tent.open_skill_tree(self)
 		return
@@ -250,7 +250,7 @@ func _handle_broom_interaction() -> void:
 
 	# หากกำลังติดคูลดาวน์
 	if _broom_cooldown_timer > 0.0:
-		_set_prompt("[Broom] Cooldown (%.1fs)" % _broom_cooldown_timer)
+		_set_prompt("Cooldown (%.1fs)" % _broom_cooldown_timer)
 		return
 
 	# ตรวจสอบว่าทิศทางที่กวาดไปตกอยู่ในระยะของกองไฟหรือไม่
@@ -261,7 +261,7 @@ func _handle_broom_interaction() -> void:
 			var mult: float = _campfire.get_reward_multiplier()
 			var sweep_amount: float = minf(available, max_broom_sweep)
 			var est_reward: int = int(round(float(int(round(sweep_amount)) * _campfire.base_reward_per_leaf) * mult))
-			_set_prompt("[Broom] Coins: %d\n[E] Sweep into Fire (+%dG)" % [coins, est_reward])
+			_set_prompt("[E] Sweep into Fire (+%dG)" % est_reward)
 
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
@@ -276,7 +276,7 @@ func _handle_broom_interaction() -> void:
 						_tent.update_label_display(upgrade_step, coins)
 				_broom_cooldown_timer = broom_cooldown
 		else:
-			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves near fire)" % [broom_level, coins])
+			_set_prompt("")
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
 				_trigger_sweep_wind_vfx()
@@ -284,14 +284,14 @@ func _handle_broom_interaction() -> void:
 	else:
 		if available >= 0.5:
 			var sweep_amount: float = minf(available, max_broom_sweep)
-			_set_prompt("[Broom Lv.%d] Coins: %d\n[E] Sweep %s (Max %.0f)" % [broom_level, coins, arrow, max_broom_sweep])
+			_set_prompt("[E] Sweep %s" % arrow)
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
 				_trigger_sweep_hit_vfx(sweep_amount)
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, max_broom_sweep)
 				_broom_cooldown_timer = broom_cooldown
 		else:
-			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves to sweep)" % [broom_level, coins])
+			_set_prompt("")
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
 				_trigger_sweep_wind_vfx()
@@ -339,14 +339,14 @@ func _handle_blower_interaction(delta: float) -> void:
 	# อัปเดตข้อความ Prompt
 	if blowing_into_fire:
 		if available >= 0.1:
-			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow into Fire (%.0f/s)" % [blower_level, coins, blower_rate])
+			_set_prompt("[Hold E] Blow into Fire")
 		else:
-			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves near fire)" % [blower_level, coins])
+			_set_prompt("")
 	else:
 		if available >= 0.1:
-			_set_prompt("[Blower Lv.%d] Coins: %d\n[Hold E] Blow %s (%.0f/s)" % [blower_level, coins, arrow, blower_rate])
+			_set_prompt("[Hold E] Blow %s" % arrow)
 		else:
-			_set_prompt("[Blower Lv.%d] Coins: %d\n(No leaves to blow)" % [blower_level, coins])
+			_set_prompt("")
 
 
 ## การทำงานเมื่อใช้มือเปล่า (Hands)
@@ -357,7 +357,7 @@ func _handle_hands_interaction() -> void:
 		if carried_leaves > 0:
 			var mult: float = _campfire.get_reward_multiplier()
 			var est_reward: int = int(round(float(carried_leaves * _campfire.base_reward_per_leaf) * mult))
-			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Feed (+%dG x%.1f)" % [hands_level, coins, carried_leaves, max_hand_capacity, est_reward, mult])
+			_set_prompt("[E] Feed Fire (+%dG)" % est_reward)
 
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("hands_gather", 0.35)
@@ -369,7 +369,7 @@ func _handle_hands_interaction() -> void:
 				carried_leaves = 0
 				leaves_changed.emit(0, max_hand_capacity)
 		else:
-			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: 0/%d\n(Need leaves)" % [hands_level, coins, max_hand_capacity])
+			_set_prompt("")
 		return
 
 	if _leaf_grid != null:
@@ -377,9 +377,9 @@ func _handle_hands_interaction() -> void:
 		var can_gather: bool = carried_leaves < max_hand_capacity and available_at_feet >= 1.0
 
 		if carried_leaves >= max_hand_capacity:
-			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d (Full)" % [hands_level, coins, carried_leaves, max_hand_capacity])
+			_set_prompt("Bag Full")
 		elif can_gather:
-			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Pick Leaf" % [hands_level, coins, carried_leaves, max_hand_capacity])
+			_set_prompt("[E] Pick Leaf")
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("hands_gather", 0.35)
 				var gathered: int = _leaf_grid.harvest_leaves(global_position.x, 1)
@@ -387,7 +387,7 @@ func _handle_hands_interaction() -> void:
 					carried_leaves += gathered
 					leaves_changed.emit(carried_leaves, max_hand_capacity)
 		else:
-			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d" % [hands_level, coins, carried_leaves, max_hand_capacity])
+			_set_prompt("")
 
 
 func _get_tool_name(tool: ToolType) -> String:
@@ -404,18 +404,71 @@ func _get_tool_name(tool: ToolType) -> String:
 
 func _update_ui() -> void:
 	if _status_label != null:
-		match current_tool:
-			ToolType.BROOM:
-				_status_label.text = "[Broom Lv.%d] Coins: %d" % [broom_level, coins]
-			ToolType.BLOWER:
-				_status_label.text = "[Blower Lv.%d] Coins: %d" % [blower_level, coins]
-			ToolType.HANDS:
-				_status_label.text = "[Hands Lv.%d] Coins: %d | Leaves: %d/%d" % [hands_level, coins, carried_leaves, max_hand_capacity]
+		_status_label.text = ""
+		_status_label.visible = false
 
 
 func _set_prompt(text: String) -> void:
 	if _status_label != null:
-		_status_label.text = text
+		_status_label.text = ""
+		_status_label.visible = false
+
+	var cleaned: String = text.strip_edges()
+	if cleaned.is_empty():
+		prompt_updated.emit("", "", false)
+		return
+
+	# หากมีหลายบรรทัด ให้เลือกบรรทัดที่เป็น Action จริง (ไม่ใช่บรรทัดแสดงสถิติ)
+	if cleaned.contains("\n"):
+		var lines: PackedStringArray = cleaned.split("\n")
+		var candidate: String = ""
+		for i in range(lines.size() - 1, -1, -1):
+			var l: String = lines[i].strip_edges()
+			if not l.is_empty() and not l.begins_with("Coins:") and not l.begins_with("[Hands") and not l.begins_with("[Broom") and not l.begins_with("[Blower"):
+				candidate = l
+				break
+		cleaned = candidate if not candidate.is_empty() else lines[lines.size() - 1].strip_edges()
+
+	# หากเป็นข้อความปฏิเสธในวงเล็บ เช่น (No leaves...) หรือว่างเปล่า ให้ซ่อน prompt
+	if cleaned.is_empty() or (cleaned.begins_with("(") and cleaned.ends_with(")")):
+		prompt_updated.emit("", "", false)
+		return
+
+	var key_code: String = ""
+	var action_text: String = cleaned
+
+	# แยกปุ่มคีย์ลัดออกมา
+	if cleaned.begins_with("[Hold E]"):
+		key_code = "E"
+		action_text = cleaned.substr(8).strip_edges()
+	elif cleaned.begins_with("[E]"):
+		key_code = "E"
+		action_text = cleaned.substr(3).strip_edges()
+	elif cleaned.begins_with("[Space]") or cleaned.begins_with("[SPACE]"):
+		key_code = "SPACE"
+		action_text = cleaned.substr(7).strip_edges()
+	elif cleaned.contains("[Hold E]"):
+		key_code = "E"
+		var idx: int = cleaned.find("[Hold E]")
+		action_text = cleaned.substr(idx + 8).strip_edges()
+	elif cleaned.contains("[E]"):
+		key_code = "E"
+		var idx: int = cleaned.find("[E]")
+		action_text = cleaned.substr(idx + 3).strip_edges()
+	elif cleaned.contains("[Space]"):
+		key_code = "SPACE"
+		var idx: int = cleaned.find("[Space]")
+		action_text = cleaned.substr(idx + 7).strip_edges()
+
+	# ลบ tag ในวงเล็บเหลี่ยมส่วนเกินที่อาจติดมาข้างหน้า
+	while action_text.begins_with("[") and action_text.contains("]"):
+		var end_b: int = action_text.find("]")
+		action_text = action_text.substr(end_b + 1).strip_edges()
+
+	if action_text.is_empty() and key_code.is_empty():
+		prompt_updated.emit("", "", false)
+	else:
+		prompt_updated.emit(key_code, action_text, true)
 
 
 func _get_tool_anim_prefix() -> String:

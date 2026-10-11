@@ -1,8 +1,9 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dgjv5gf08o6yf"]
 
-[ext_resource type="Script" path="res://scripts/environment/tent.gd" id="1_tent_script"]
+[ext_resource type="Script" uid="uid://dek6ha3mriwwu" path="res://scripts/environment/tent.gd" id="1_tent_script"]
 [ext_resource type="Texture2D" uid="uid://b58hludk75swo" path="res://assets/environment/camp/tent_flutter_sheet.png" id="2_tent_sheet"]
 [ext_resource type="PackedScene" path="res://scenes/ui/skill_tree_ui.tscn" id="3_skill_tree_ui"]
+[ext_resource type="Texture2D" path="res://assets/ui/icons/marker_arrow_green.png" id="4_marker_arrow"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0"]
 atlas = ExtResource("2_tent_sheet")
@@ -42,21 +43,22 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_4")
 }],
-"loop": true,
+"loop": 1,
 "name": &"flutter",
 "speed": 6.0
 }]
 
-[node name="Tent" type="Node2D" groups=["tent"]]
+[node name="Tent" type="Node2D" unique_id=1685567244 groups=["tent"]]
 script = ExtResource("1_tent_script")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=41633944]
 position = Vector2(0, -15)
 sprite_frames = SubResource("SpriteFrames_tent")
 animation = &"flutter"
 autoplay = "flutter"
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=587393446]
+visible = false
 offset_left = -60.0
 offset_top = -48.0
 offset_right = 60.0
@@ -65,4 +67,11 @@ theme_override_font_sizes/font_size = 11
 text = "Tent"
 horizontal_alignment = 1
 
-[node name="SkillTreeUI" parent="." instance=ExtResource("3_skill_tree_ui")]
+[node name="SkillTreeUI" parent="." unique_id=512958655 instance=ExtResource("3_skill_tree_ui")]
+
+[node name="UpgradeMarker" type="Sprite2D" parent="." unique_id=1929600703]
+unique_name_in_owner = true
+visible = false
+texture_filter = 1
+position = Vector2(0, -38)
+texture = ExtResource("4_marker_arrow")

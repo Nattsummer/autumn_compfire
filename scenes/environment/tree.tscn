@@ -247,6 +247,7 @@ scale_amount_max = 0.75
 color_ramp = SubResource("Gradient_falling_leaves")
 
 [node name="Label" type="Label" parent="." unique_id=288892907]
+visible = false
 offset_left = -40.0
 offset_top = -80.0
 offset_right = 40.0

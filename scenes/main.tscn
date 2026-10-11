@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/fg_bush_grass.tscn" id="6_fg_bush_grass_scene"]
 [ext_resource type="PackedScene" uid="uid://b8tgsigw8kmrv" path="res://scenes/environment/bg_sky.tscn" id="7_bg_sky_scene"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud.tscn" id="8_hud_scene"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(3500, 40)
@@ -118,6 +119,8 @@ limit_right = 3500
 drag_horizontal_enabled = true
 drag_left_margin = 0.1
 drag_right_margin = 0.1
+
+[node name="HUD" parent="." instance=ExtResource("8_hud_scene")]
 
 [node name="EndGameUI" type="CanvasLayer" parent="." unique_id=1463716396]
 visible = false

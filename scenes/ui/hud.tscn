@@ -1,0 +1,381 @@
+[gd_scene format=3 uid="uid://dy3axe02xkojw"]
+
+[ext_resource type="Script" uid="uid://dn8pqweutiwq1" path="res://scripts/ui/hud.gd" id="1_hud_script"]
+[ext_resource type="Texture2D" uid="uid://bdbvcqc3upife" path="res://assets/ui/icons/icon_hands.png" id="2_icon_hands"]
+[ext_resource type="FontFile" uid="uid://b70evh54med8l" path="res://assets/font/Peaberry-Font-v2.0/Peaberry Font Family/Peaberry Monospace/Peaberry-Mono.otf" id="3_4jqwt"]
+[ext_resource type="Texture2D" uid="uid://d1ttr2umqwjn6" path="res://assets/ui/icons/icon_leaf.png" id="3_icon_leaf"]
+[ext_resource type="Texture2D" uid="uid://b2446x0npo2ob" path="res://assets/ui/icons/icon_coin.png" id="4_icon_coin"]
+[ext_resource type="Texture2D" uid="uid://g164m5xg412s" path="res://assets/ui/keys/key_e.png" id="5_key_e"]
+[ext_resource type="Texture2D" uid="uid://dobpo3cog2vji" path="res://assets/ui/keys/key_a.png" id="6_key_a"]
+[ext_resource type="Texture2D" uid="uid://b6ctv0tw405bo" path="res://assets/ui/keys/key_d.png" id="7_key_d"]
+[ext_resource type="Texture2D" uid="uid://5ix2uxwydhtu" path="res://assets/ui/keys/key_space.png" id="8_key_space"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_h022r"]
+font = ExtResource("3_4jqwt")
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_tool_slot"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_prompt"]
+content_margin_left = 12.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 32.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_guide"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.050980393, 0.050980393, 0.07058824, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_alert"]
+content_margin_left = 14.0
+content_margin_top = 5.0
+content_margin_right = 14.0
+content_margin_bottom = 5.0
+bg_color = Color(0.039215688, 0.07058824, 0.050980393, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+shadow_color = Color(0, 0, 0, 0)
+shadow_size = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_4jqwt"]
+font = ExtResource("3_4jqwt")
+font_size = 24
+font_color = Color(0, 1, 0, 1)
+shadow_size = 2
+shadow_color = Color(0, 0, 0, 1)
+
+[node name="HUD" type="CanvasLayer" unique_id=1893210140]
+layer = 5
+script = ExtResource("1_hud_script")
+
+[node name="RootControl" type="Control" parent="." unique_id=327892337]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="TopLeftMargin" type="MarginContainer" parent="RootControl" unique_id=541188279]
+layout_mode = 1
+offset_right = 360.0
+offset_bottom = 60.0
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 18
+
+[node name="StatsHBox" type="HBoxContainer" parent="RootControl/TopLeftMargin" unique_id=232186714]
+layout_mode = 2
+theme_override_constants/separation = 22
+
+[node name="LeafHBox" type="HBoxContainer" parent="RootControl/TopLeftMargin/StatsHBox" unique_id=1726193109]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LeafIcon" type="TextureRect" parent="RootControl/TopLeftMargin/StatsHBox/LeafHBox" unique_id=136726207]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("3_icon_leaf")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="LeafLabel" type="Label" parent="RootControl/TopLeftMargin/StatsHBox/LeafHBox" unique_id=1289564649]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9019608)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "0"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="CoinHBox" type="HBoxContainer" parent="RootControl/TopLeftMargin/StatsHBox" unique_id=2105966626]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CoinIcon" type="TextureRect" parent="RootControl/TopLeftMargin/StatsHBox/CoinHBox" unique_id=1873752387]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("4_icon_coin")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CoinLabel" type="Label" parent="RootControl/TopLeftMargin/StatsHBox/CoinHBox" unique_id=1739509440]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9019608)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "0"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="TopRightMargin" type="MarginContainer" parent="RootControl" unique_id=343341851]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -220.0
+offset_top = -60.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_bottom = 14
+
+[node name="ToolHBox" type="HBoxContainer" parent="RootControl/TopRightMargin" unique_id=1934389672]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ToolLabel" type="Label" parent="RootControl/TopRightMargin/ToolHBox" unique_id=1735217133]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.95, 0.9, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.85)
+theme_override_colors/font_outline_color = Color(0.08, 0.05, 0.04, 0.9)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "Hands"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="ToolSlot" type="PanelContainer" parent="RootControl/TopRightMargin/ToolHBox" unique_id=363676490]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBox_tool_slot")
+
+[node name="ToolIcon" type="TextureRect" parent="RootControl/TopRightMargin/ToolHBox/ToolSlot" unique_id=492851147]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("2_icon_hands")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="BottomCenterContainer" type="CenterContainer" parent="RootControl" unique_id=75428838]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -68.0
+offset_right = 200.0
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="PromptBox" type="PanelContainer" parent="RootControl/BottomCenterContainer" unique_id=1655296322]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_prompt")
+
+[node name="HBox" type="HBoxContainer" parent="RootControl/BottomCenterContainer/PromptBox" unique_id=450897428]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="PromptKey" type="TextureRect" parent="RootControl/BottomCenterContainer/PromptBox/HBox" unique_id=448626293]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_key_e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PromptLabel" type="Label" parent="RootControl/BottomCenterContainer/PromptBox/HBox" unique_id=2034035328]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 14
+text = "Pick Leaf"
+label_settings = SubResource("LabelSettings_h022r")
+vertical_alignment = 1
+
+[node name="BottomLeftControls" type="MarginContainer" parent="RootControl" unique_id=500198041]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -42.0
+offset_right = 320.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_bottom = 14
+
+[node name="GuideCard" type="PanelContainer" parent="RootControl/BottomLeftControls" unique_id=726583355]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_guide")
+
+[node name="HBox" type="HBoxContainer" parent="RootControl/BottomLeftControls/GuideCard" unique_id=698643424]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MoveHBox" type="HBoxContainer" parent="RootControl/BottomLeftControls/GuideCard/HBox" unique_id=530325441]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="KeyA" type="TextureRect" parent="RootControl/BottomLeftControls/GuideCard/HBox/MoveHBox" unique_id=1305943026]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("6_key_a")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="KeyD" type="TextureRect" parent="RootControl/BottomLeftControls/GuideCard/HBox/MoveHBox" unique_id=981555901]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("7_key_d")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MoveLabel" type="Label" parent="RootControl/BottomLeftControls/GuideCard/HBox/MoveHBox" unique_id=393467400]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.68, 0.65, 0.8)
+theme_override_font_sizes/font_size = 10
+text = "Move"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="ActionHBox" type="HBoxContainer" parent="RootControl/BottomLeftControls/GuideCard/HBox" unique_id=1594439967]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="KeyE" type="TextureRect" parent="RootControl/BottomLeftControls/GuideCard/HBox/ActionHBox" unique_id=1151048192]
+texture_filter = 1
+custom_minimum_size = Vector2(18, 18)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("5_key_e")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ActionLabel" type="Label" parent="RootControl/BottomLeftControls/GuideCard/HBox/ActionHBox" unique_id=1867137649]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.68, 0.65, 0.8)
+theme_override_font_sizes/font_size = 10
+text = "Interact"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="SweepHBox" type="HBoxContainer" parent="RootControl/BottomLeftControls/GuideCard/HBox" unique_id=1406019708]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="KeySpace" type="TextureRect" parent="RootControl/BottomLeftControls/GuideCard/HBox/SweepHBox" unique_id=1355305904]
+texture_filter = 1
+custom_minimum_size = Vector2(28, 14)
+layout_mode = 2
+size_flags_vertical = 4
+texture = ExtResource("8_key_space")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SweepLabel" type="Label" parent="RootControl/BottomLeftControls/GuideCard/HBox/SweepHBox" unique_id=923848247]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.68, 0.65, 0.8)
+theme_override_font_sizes/font_size = 10
+text = "Tool"
+label_settings = SubResource("LabelSettings_h022r")
+
+[node name="TopCenterContainer" type="CenterContainer" parent="RootControl" unique_id=1498127341]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 18.0
+offset_right = 200.0
+offset_bottom = 54.0
+grow_horizontal = 2
+mouse_filter = 2
+
+[node name="TentUpgradeAlert" type="PanelContainer" parent="RootControl/TopCenterContainer" unique_id=1982736412]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_alert")
+
+[node name="TentAlertLabel" type="Label" parent="RootControl/TopCenterContainer/TentUpgradeAlert" unique_id=1625348910]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.95, 0.45, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.9)
+theme_override_colors/font_outline_color = Color(0.02, 0.1, 0.03, 0.95)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 15
+text = "Tent Upgrade Available!"
+label_settings = SubResource("LabelSettings_4jqwt")
+horizontal_alignment = 1
+vertical_alignment = 1

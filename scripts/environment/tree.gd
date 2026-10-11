@@ -13,6 +13,9 @@ var is_burning: bool = false
 
 
 func _ready() -> void:
+	if _label != null:
+		_label.visible = false
+
 	# หากไม่ได้กำหนด variant มาเจาะจง ให้กำหนดตามลำดับ Index ในฉาก (0 ถึง 4)
 	if variant < 0:
 		variant = get_index() % 5

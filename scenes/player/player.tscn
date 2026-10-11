@@ -294,7 +294,7 @@ colors = PackedColorArray(0.98, 0.82, 0.28, 1, 0.95, 0.52, 0.12, 1, 0.82, 0.22, 
 offsets = PackedFloat32Array(0, 0.25, 0.75, 1)
 colors = PackedColorArray(1, 1, 1, 0.9, 0.85, 0.95, 1, 0.7, 0.75, 0.9, 1, 0.35, 0.7, 0.85, 1, 0)
 
-[node name="Player" type="CharacterBody2D" unique_id=190470892]
+[node name="Player" type="CharacterBody2D" unique_id=190470892 groups=["player"]]
 script = ExtResource("1_player_script")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=480434213]
@@ -308,12 +308,13 @@ animation = &"blower_blow"
 autoplay = "hands_idle"
 
 [node name="StatusLabel" type="Label" parent="." unique_id=1053201519]
+visible = false
 offset_left = -90.0
 offset_top = -60.0
 offset_right = 90.0
 offset_bottom = -34.0
 theme_override_font_sizes/font_size = 11
-text = "Coins: 0 | Leaves: 0/2"
+text = ""
 horizontal_alignment = 1
 vertical_alignment = 1
 

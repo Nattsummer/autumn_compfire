@@ -24,11 +24,31 @@ signal upgrade_purchased(step: int, title: String, cost: int)
 
 @onready var _label: Label = $Label
 @onready var _skill_tree_ui: SkillTreeUI = $SkillTreeUI
+@onready var _upgrade_marker: Sprite2D = $UpgradeMarker
+
+var _player: Player = null
+var _marker_tween: Tween = null
+const MARKER_BASE_Y: float = -38.0
 
 
 func _ready() -> void:
 	if _label != null:
+		_label.visible = false
 		_label.text = "Tent [Upgrades]"
+	if _upgrade_marker != null:
+		_upgrade_marker.visible = false
+		_upgrade_marker.position.y = MARKER_BASE_Y
+
+	_player = get_tree().get_first_node_in_group("player") as Player
+	if _player != null:
+		if not _player.coins_changed.is_connected(_on_player_coins_changed):
+			_player.coins_changed.connect(_on_player_coins_changed)
+		update_label_display(_player.upgrade_step, _player.coins)
+
+
+func _on_player_coins_changed(_new_amount: int) -> void:
+	if _player != null:
+		update_label_display(_player.upgrade_step, _player.coins)
 
 
 ## ตรวจสอบว่าผู้เล่นอยู่ในระยะของเต็นท์หรือไม่
@@ -142,20 +162,56 @@ func get_upgrade_info(step: int) -> Dictionary:
 			return {"valid": false}
 
 
-## อัปเดตข้อความบนป้ายเต็นท์ให้สอดคล้องกับสถานะ
+## อัปเดตข้อความบนป้ายเต็นท์และสถานะ Marker เหนือเต็นท์ให้สอดคล้องกับสถานะ
 func update_label_display(step: int, player_coins: int) -> void:
-	if _label == null:
-		return
+	if _label != null:
+		_label.visible = false
 	
 	if step >= get_total_steps():
-		_label.text = "Tent [Maxed]"
+		if _label != null:
+			_label.text = "Tent [Maxed]"
+		_set_marker_visible(false)
 		return
 	
 	var info: Dictionary = get_upgrade_info(step)
 	if info.get("valid", false):
 		var cost: int = int(info["cost"])
-		if player_coins >= cost:
-			_label.text = "Tent [Upgrade!]\n%s (%dG)" % [String(info["title"]), cost]
-		else:
-			_label.text = "Tent\n%s (%dG)" % [String(info["title"]), cost]
+		var can_upgrade: bool = player_coins >= cost
+		if _label != null:
+			if can_upgrade:
+				_label.text = "Tent [Upgrade!]\n%s (%dG)" % [String(info["title"]), cost]
+			else:
+				_label.text = "Tent\n%s (%dG)" % [String(info["title"]), cost]
+		_set_marker_visible(can_upgrade)
+	else:
+		_set_marker_visible(false)
+
+
+func _set_marker_visible(should_show: bool) -> void:
+	if _upgrade_marker == null:
+		return
+
+	if should_show:
+		if not _upgrade_marker.visible:
+			_upgrade_marker.visible = true
+			_upgrade_marker.position.y = MARKER_BASE_Y
+			_start_marker_bob()
+	else:
+		if _upgrade_marker.visible:
+			if _marker_tween != null and _marker_tween.is_valid():
+				_marker_tween.kill()
+			_upgrade_marker.visible = false
+			_upgrade_marker.position.y = MARKER_BASE_Y
+
+
+func _start_marker_bob() -> void:
+	if _upgrade_marker == null or not _upgrade_marker.visible:
+		return
+	if _marker_tween != null and _marker_tween.is_valid():
+		_marker_tween.kill()
+
+	_upgrade_marker.position.y = MARKER_BASE_Y
+	_marker_tween = create_tween().set_loops()
+	_marker_tween.tween_property(_upgrade_marker, "position:y", MARKER_BASE_Y - 4.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_marker_tween.tween_property(_upgrade_marker, "position:y", MARKER_BASE_Y + 1.0, 0.55).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
