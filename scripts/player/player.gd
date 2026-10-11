@@ -30,7 +30,7 @@ enum ToolType {
 @export var blower_rate: float = 30.0
 
 ## เงินสะสมของผู้เล่น
-@export var coins: int = 0
+@export var coins: int = 1000000
 
 ## ลำดับขั้นการอัพเกรดปัจจุบัน (0 ถึง 7 สำหรับ Linear Upgrade 8 ขั้น)
 @export var upgrade_step: int = 0
@@ -70,15 +70,45 @@ var _tent: Tent = null
 @onready var _sweep_wind_particles: CPUParticles2D = $SweepWindParticles
 @onready var _blow_wind_particles: CPUParticles2D = $BlowWindParticles
 @onready var _blow_leaves_particles: CPUParticles2D = $BlowLeavesParticles
+@onready var _broom_sfx: AudioStreamPlayer2D = $BroomSweepSFX
+@onready var _footstep_sfx: AudioStreamPlayer2D = $FootstepSFX
+@onready var _grab_leaf_sfx: AudioStreamPlayer2D = $GrabLeafSFX
+@onready var _blower_sfx: AudioStreamPlayer2D = $BlowerSFX
+
+## การตั้งค่าระดับเสียงและ Fade in / Fade out ของเครื่องเป่าลม (Blower SFX)
+@export var blower_volume_db: float = -5.0
+var _blower_fade_tween: Tween = null
+var _is_blower_audio_active: bool = false
 
 ## ตัวจับเวลาแอนิเมชัน One-shot
 var _action_anim_timer: float = 0.0
+
+## ตัวจับเวลาผ่อนผันการตัดเสียงฝีเท้า เพื่อไม่ให้เสียงสะดุดหรือเริ่มใหม่เวลาสลับปุ่มหรือกดเดินรัวๆ
+var _footstep_grace_timer: float = 0.0
+
+## ตัวแปรควบคุมการ Fade in / Fade out ของเสียงฝีเท้า
+var _footstep_base_volume_db: float = -12.0
+var _footstep_fade_tween: Tween = null
+var _is_footstep_active: bool = false
 
 
 func _ready() -> void:
 	_leaf_grid = get_tree().get_first_node_in_group("leaf_grid") as LeafGrid
 	_campfire = get_tree().get_first_node_in_group("campfire") as Campfire
 	_tent = get_tree().get_first_node_in_group("tent") as Tent
+
+	var listener: AudioListener2D = get_node_or_null("AudioListener2D")
+	if listener != null:
+		listener.make_current()
+
+	if _footstep_sfx != null:
+		_footstep_base_volume_db = _footstep_sfx.volume_db
+		_footstep_sfx.volume_db = -55.0
+		_footstep_sfx.finished.connect(_on_footstep_finished)
+
+	if _blower_sfx != null:
+		_blower_sfx.volume_db = -50.0
+		_blower_sfx.finished.connect(_on_blower_finished)
 
 	# เริ่มต้นรายการอุปกรณ์ที่ปลดล็อกตามเลเวล
 	unlocked_tools.clear()
@@ -100,7 +130,14 @@ func _on_tent_upgrade_purchased(_step: int, _title: String, _cost: int) -> void:
 	_update_ui()
 
 
+## สถานะล็อคการควบคุมของผู้เล่น (เช่น ตอนเกิดเหตุการณ์ฉากจบเกม Wildfire)
+var is_input_disabled: bool = false
+
+
 func _unhandled_input(event: InputEvent) -> void:
+	if is_input_disabled:
+		return
+
 	# สลับอุปกรณ์ที่ปลดล็อกแล้ว (Q หรือ Tab)
 	if event.is_action_pressed("switch_tool"):
 		cycle_unlocked_tool()
@@ -117,12 +154,21 @@ func cycle_unlocked_tool() -> void:
 	var current_idx: int = unlocked_tools.find(current_tool)
 	var next_idx: int = (current_idx + 1) % unlocked_tools.size()
 	current_tool = unlocked_tools[next_idx]
+	_update_blower_audio(false)
 	tool_changed.emit(current_tool)
 	_update_ui()
 	_update_animations(0.0)
 
 
 func _physics_process(delta: float) -> void:
+	# หากระบบล็อคการควบคุมอยู่ (ฉาก Climax / End Game) ให้หยุดการเคลื่อนไหวและการกระทำทั้งหมด
+	if is_input_disabled:
+		velocity.x = 0.0
+		_apply_gravity(delta)
+		move_and_slide()
+		_update_animations(delta)
+		return
+
 	# อัปเดตเวลานับถอยหลังคูลดาวน์ของไม้กวาด
 	if _broom_cooldown_timer > 0.0:
 		_broom_cooldown_timer = maxf(0.0, _broom_cooldown_timer - delta)
@@ -133,6 +179,15 @@ func _physics_process(delta: float) -> void:
 		_apply_gravity(delta)
 		move_and_slide()
 		_update_animations(delta)
+		_footstep_grace_timer = 0.0
+		_update_blower_audio(false)
+		if _is_footstep_active:
+			_is_footstep_active = false
+			if _footstep_fade_tween != null and _footstep_fade_tween.is_valid():
+				_footstep_fade_tween.kill()
+			if _footstep_sfx != null:
+				_footstep_sfx.volume_db = -55.0
+				_footstep_sfx.stream_paused = true
 		return
 
 	_apply_gravity(delta)
@@ -140,6 +195,39 @@ func _physics_process(delta: float) -> void:
 	_handle_interactions(delta)
 	move_and_slide()
 	_update_animations(delta)
+	_update_footstep_sfx(delta)
+
+
+## ล็อคการควบคุมของผู้เล่นทั้งหมดเมื่อเข้าสู่ฉาก End Game
+func disable_input() -> void:
+	is_input_disabled = true
+	velocity.x = 0.0
+	_action_anim_timer = 0.0
+	_footstep_grace_timer = 0.0
+
+	_update_blower_audio(false)
+	if _blow_wind_particles != null:
+		_blow_wind_particles.emitting = false
+	if _blow_leaves_particles != null:
+		_blow_leaves_particles.emitting = false
+
+	if _sweep_leaf_particles != null:
+		_sweep_leaf_particles.emitting = false
+	if _sweep_wind_particles != null:
+		_sweep_wind_particles.emitting = false
+
+	if _is_footstep_active:
+		_is_footstep_active = false
+		if _footstep_fade_tween != null and _footstep_fade_tween.is_valid():
+			_footstep_fade_tween.kill()
+		if _footstep_sfx != null:
+			_footstep_sfx.volume_db = -55.0
+			_footstep_sfx.stream_paused = true
+
+	if _tent != null and _tent.is_skill_tree_open():
+		_tent.close_skill_tree()
+
+	_update_animations(0.0)
 
 
 func _apply_gravity(delta: float) -> void:
@@ -186,11 +274,13 @@ func _handle_interactions(delta: float) -> void:
 	# 2. ปฏิสัมพันธ์ตามประเภทไอเทมที่กำลังถือ
 	match current_tool:
 		ToolType.BROOM:
+			_update_blower_audio(false)
 			_update_blower_vfx(false, false)
 			_handle_broom_interaction()
 		ToolType.BLOWER:
 			_handle_blower_interaction(delta)
 		ToolType.HANDS:
+			_update_blower_audio(false)
 			_update_blower_vfx(false, false)
 			_handle_hands_interaction()
 
@@ -265,6 +355,7 @@ func _handle_broom_interaction() -> void:
 
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
+				_play_broom_sfx()
 				_trigger_sweep_hit_vfx(sweep_amount)
 				var harvested: float = _leaf_grid.harvest_leaves_float(global_position.x, max_broom_sweep)
 				var burn_count: int = int(round(harvested))
@@ -279,6 +370,7 @@ func _handle_broom_interaction() -> void:
 			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves near fire)" % [broom_level, coins])
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
+				_play_broom_sfx()
 				_trigger_sweep_wind_vfx()
 				_broom_cooldown_timer = broom_cooldown
 	else:
@@ -287,6 +379,7 @@ func _handle_broom_interaction() -> void:
 			_set_prompt("[Broom Lv.%d] Coins: %d\n[E] Sweep %s (Max %.0f)" % [broom_level, coins, arrow, max_broom_sweep])
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
+				_play_broom_sfx()
 				_trigger_sweep_hit_vfx(sweep_amount)
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, max_broom_sweep)
 				_broom_cooldown_timer = broom_cooldown
@@ -294,6 +387,7 @@ func _handle_broom_interaction() -> void:
 			_set_prompt("[Broom Lv.%d] Coins: %d\n(No leaves to sweep)" % [broom_level, coins])
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("broom_sweep", 0.4)
+				_play_broom_sfx()
 				_trigger_sweep_wind_vfx()
 				_broom_cooldown_timer = broom_cooldown
 
@@ -315,6 +409,7 @@ func _handle_blower_interaction(delta: float) -> void:
 
 	if is_holding_blow:
 		# มีการเป่าลมเกิดขึ้น: ถ้ามีใบไม้ให้เป่าใบไม้ด้วย ถ้าไม่มีให้เป่าลมเปล่า
+		_update_blower_audio(true)
 		_update_blower_vfx(true, available >= 0.1)
 
 		if blowing_into_fire:
@@ -334,6 +429,7 @@ func _handle_blower_interaction(delta: float) -> void:
 			if available >= 0.1:
 				_leaf_grid.move_leaves(global_position.x, sweep_target_x, blow_amount)
 	else:
+		_update_blower_audio(false)
 		_update_blower_vfx(false, false)
 
 	# อัปเดตข้อความ Prompt
@@ -382,6 +478,7 @@ func _handle_hands_interaction() -> void:
 			_set_prompt("[Hands Lv.%d] Coins: %d | Leaves: %d/%d\n[E] Pick Leaf" % [hands_level, coins, carried_leaves, max_hand_capacity])
 			if Input.is_action_just_pressed("interact"):
 				_play_action_animation("hands_gather", 0.35)
+				_play_grab_leaf_sfx()
 				var gathered: int = _leaf_grid.harvest_leaves(global_position.x, 1)
 				if gathered > 0:
 					carried_leaves += gathered
@@ -464,6 +561,20 @@ func _trigger_sweep_wind_vfx() -> void:
 		_sweep_wind_particles.emitting = true
 
 
+## เล่นเสียงเอฟเฟกต์กวาดไม้กวาด (Broom Sweep SFX) พร้อมสุ่ม Pitch เล็กน้อยให้ฟังดูเป็นธรรมชาติ
+func _play_broom_sfx() -> void:
+	if _broom_sfx != null:
+		_broom_sfx.pitch_scale = randf_range(0.92, 1.08)
+		_broom_sfx.play()
+
+
+## เล่นเสียงเอฟเฟกต์หยิบใบไม้ด้วยมือ (Grab Leaf SFX)
+func _play_grab_leaf_sfx() -> void:
+	if _grab_leaf_sfx != null:
+		_grab_leaf_sfx.pitch_scale = randf_range(0.94, 1.06)
+		_grab_leaf_sfx.play()
+
+
 ## จัดการแสดงผล Particle ของเครื่องเป่าลม (Blower VFX)
 func _update_blower_vfx(wind_active: bool, leaves_active: bool) -> void:
 	var dir_x: float = float(facing_direction)
@@ -515,3 +626,88 @@ func _update_animations(delta: float) -> void:
 	var target_anim: String = "%s_walk" % prefix if absf(velocity.x) > 5.0 else "%s_idle" % prefix
 	if _animated_sprite.animation != StringName(target_anim):
 		_animated_sprite.play(target_anim)
+
+
+## ควบคุมเสียงฝีเท้าขณะที่ตัวละครเคลื่อนที่บนพื้น พร้อมระบบ Fade In / Fade Out นุ่มนวล
+func _update_footstep_sfx(delta: float) -> void:
+	if _footstep_sfx == null:
+		return
+
+	var is_moving: bool = is_on_floor() and absf(velocity.x) > 10.0
+
+	if is_moving:
+		_footstep_grace_timer = 0.12
+		if not _is_footstep_active:
+			_is_footstep_active = true
+			if _footstep_fade_tween != null and _footstep_fade_tween.is_valid():
+				_footstep_fade_tween.kill()
+
+			if not _footstep_sfx.playing:
+				_footstep_sfx.play()
+			elif _footstep_sfx.stream_paused:
+				_footstep_sfx.stream_paused = false
+
+			_footstep_fade_tween = create_tween()
+			_footstep_fade_tween.tween_property(_footstep_sfx, "volume_db", _footstep_base_volume_db, 0.10)
+	else:
+		if _footstep_grace_timer > 0.0:
+			_footstep_grace_timer = maxf(0.0, _footstep_grace_timer - delta)
+
+		if _footstep_grace_timer == 0.0 and _is_footstep_active:
+			_is_footstep_active = false
+			if _footstep_fade_tween != null and _footstep_fade_tween.is_valid():
+				_footstep_fade_tween.kill()
+
+			_footstep_fade_tween = create_tween()
+			_footstep_fade_tween.tween_property(_footstep_sfx, "volume_db", -55.0, 0.14)
+			_footstep_fade_tween.tween_callback(_pause_footstep_if_inactive)
+
+
+func _pause_footstep_if_inactive() -> void:
+	if not _is_footstep_active and _footstep_sfx != null and _footstep_sfx.playing:
+		_footstep_sfx.stream_paused = true
+
+
+func _on_footstep_finished() -> void:
+	if is_on_floor() and absf(velocity.x) > 10.0 and _footstep_sfx != null:
+		_footstep_sfx.play()
+
+
+## จัดการ Fade in / Fade out ของเสียงเครื่องเป่าลม (Blow Leaf SFX)
+func _update_blower_audio(active: bool) -> void:
+	if _blower_sfx == null:
+		return
+
+	if active:
+		if not _is_blower_audio_active:
+			_is_blower_audio_active = true
+			if _blower_fade_tween != null and _blower_fade_tween.is_valid():
+				_blower_fade_tween.kill()
+
+			if not _blower_sfx.playing:
+				_blower_sfx.volume_db = -45.0
+				_blower_sfx.play()
+			elif _blower_sfx.stream_paused:
+				_blower_sfx.stream_paused = false
+
+			_blower_fade_tween = create_tween()
+			_blower_fade_tween.tween_property(_blower_sfx, "volume_db", blower_volume_db, 0.15)
+	else:
+		if _is_blower_audio_active:
+			_is_blower_audio_active = false
+			if _blower_fade_tween != null and _blower_fade_tween.is_valid():
+				_blower_fade_tween.kill()
+
+			_blower_fade_tween = create_tween()
+			_blower_fade_tween.tween_property(_blower_sfx, "volume_db", -50.0, 0.20)
+			_blower_fade_tween.tween_callback(_pause_blower_if_inactive)
+
+
+func _pause_blower_if_inactive() -> void:
+	if not _is_blower_audio_active and _blower_sfx != null and _blower_sfx.playing:
+		_blower_sfx.stream_paused = true
+
+
+func _on_blower_finished() -> void:
+	if _is_blower_audio_active and _blower_sfx != null:
+		_blower_sfx.play()

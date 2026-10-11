@@ -1,13 +1,16 @@
-[gd_scene format=3 uid="uid://bv5ow8qpvgx8e"]
+[gd_scene format=3 uid="uid://dgoujgk65hqf3"]
 
 [ext_resource type="Script" uid="uid://ddwdeolc5xor1" path="res://scripts/main.gd" id="1_main_script"]
-[ext_resource type="PackedScene" uid="uid://com1wkqf1x18c" path="res://scenes/player/player.tscn" id="1_player_scene"]
+[ext_resource type="PackedScene" uid="uid://jxdpqhab2dwd" path="res://scenes/player/player.tscn" id="1_player_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/tent.tscn" id="2_tent_scene"]
-[ext_resource type="PackedScene" uid="uid://fnx75iplm1gv" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
-[ext_resource type="PackedScene" uid="uid://ougkbupldnhn" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/campfire.tscn" id="3_campfire_scene"]
+[ext_resource type="PackedScene" path="res://scenes/environment/tree.tscn" id="4_tree_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/leaf_grid.tscn" id="5_leaf_grid_scene"]
 [ext_resource type="PackedScene" path="res://scenes/environment/fg_bush_grass.tscn" id="6_fg_bush_grass_scene"]
 [ext_resource type="PackedScene" uid="uid://b8tgsigw8kmrv" path="res://scenes/environment/bg_sky.tscn" id="7_bg_sky_scene"]
+[ext_resource type="AudioStream" uid="uid://hlt17821rri4" path="res://assets/audio/bgm/play_scene.wav" id="8_bgm"]
+[ext_resource type="AudioStream" uid="uid://bpe0l57ts4ts3" path="res://assets/audio/bgm/ambiance.mp3" id="10_choun"]
+[ext_resource type="AudioStream" uid="uid://d30jmmi66i21v" path="res://assets/audio/bgm/endgame_scene.wav" id="11_endgame_bgm"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
 size = Vector2(3500, 40)
@@ -20,13 +23,14 @@ size = Vector2(32, 1200)
 
 [node name="Main" type="Node2D" unique_id=1913619799]
 script = ExtResource("1_main_script")
+endgame_bgm = ExtResource("11_endgame_bgm")
 
 [node name="SkyBackground" type="ColorRect" parent="." unique_id=749941005]
 z_index = -20
-offset_left = -200.0
-offset_top = -200.0
-offset_right = 3800.0
-offset_bottom = 700.0
+offset_left = -1000.0
+offset_top = -2000.0
+offset_right = 5000.0
+offset_bottom = 2000.0
 color = Color(0.3038631, 0.34259856, 0.49556446, 1)
 
 [node name="BackgroundSky" parent="." unique_id=1311460577 instance=ExtResource("7_bg_sky_scene")]
@@ -159,3 +163,13 @@ text = "You fueled the flame until the entire autumn forest caught fire.
 
 - END OF AUTUMN -"
 horizontal_alignment = 1
+
+[node name="BGMPlayer" type="AudioStreamPlayer" parent="." unique_id=1862443144]
+stream = ExtResource("8_bgm")
+volume_db = -27.976
+autoplay = true
+
+[node name="ambiance" type="AudioStreamPlayer" parent="." unique_id=155045694]
+stream = ExtResource("10_choun")
+volume_db = -35.255
+autoplay = true

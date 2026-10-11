@@ -1,10 +1,14 @@
-[gd_scene format=3 uid="uid://com1wkqf1x18c"]
+[gd_scene format=3 uid="uid://jxdpqhab2dwd"]
 
 [ext_resource type="Script" uid="uid://dg5pbs5v0uwmw" path="res://scripts/player/player.gd" id="1_player_script"]
 [ext_resource type="Texture2D" uid="uid://cywwf4d0hxvcw" path="res://assets/player/player_hands_sheet.png" id="2_hands_tex"]
 [ext_resource type="Texture2D" uid="uid://b0qbga587i06y" path="res://assets/player/player_broom_sheet.png" id="3_broom_tex"]
 [ext_resource type="Texture2D" uid="uid://b0dayqtgo5yjp" path="res://assets/player/player_blower_sheet.png" id="4_blower_tex"]
 [ext_resource type="Texture2D" uid="uid://b8ca1mk8ent8s" path="res://assets/vfx/leaf_particle.png" id="5_leaf_texture"]
+[ext_resource type="AudioStream" uid="uid://celhjwpgood6g" path="res://assets/audio/sfx/broom_sweep.wav" id="6_75vfm"]
+[ext_resource type="AudioStream" uid="uid://ckgri4le1adxd" path="res://assets/audio/sfx/footstep.wav" id="7_footstep_sfx"]
+[ext_resource type="AudioStream" uid="uid://gi8doqid2f8j" path="res://assets/audio/sfx/grap_leaf.wav" id="8_grab_leaf_sfx"]
+[ext_resource type="AudioStream" uid="uid://cbivvvie28wgi" path="res://assets/audio/sfx/blow_leaf.wav" id="9_blow_leaf_sfx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_player"]
 size = Vector2(16, 32)
@@ -393,3 +397,22 @@ scale_amount_min = 0.5
 scale_amount_max = 0.75
 color_ramp = SubResource("Gradient_75vfm")
 color_initial_ramp = SubResource("Gradient_sweep_leaves")
+
+[node name="BroomSweepSFX" type="AudioStreamPlayer2D" parent="." unique_id=761167961]
+stream = ExtResource("6_75vfm")
+volume_db = 0.086
+
+[node name="FootstepSFX" type="AudioStreamPlayer2D" parent="." unique_id=1756813840]
+stream = ExtResource("7_footstep_sfx")
+volume_db = -19.798
+
+[node name="GrabLeafSFX" type="AudioStreamPlayer2D" parent="." unique_id=440243745]
+stream = ExtResource("8_grab_leaf_sfx")
+volume_db = -6.0
+
+[node name="AudioListener2D" type="AudioListener2D" parent="." unique_id=1554217108]
+current = true
+
+[node name="BlowerSFX" type="AudioStreamPlayer2D" parent="." unique_id=1822125246]
+stream = ExtResource("9_blow_leaf_sfx")
+volume_db = -30.459

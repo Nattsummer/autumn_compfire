@@ -17,8 +17,8 @@ repeat_size = Vector2(128, 0)
 repeat_times = 40
 
 [node name="Sprite2D" type="Sprite2D" parent="SkyLayer" unique_id=706592112]
-position = Vector2(0, 412)
-scale = Vector2(2, 2)
+position = Vector2(0, 150)
+scale = Vector2(2, 8)
 texture = ExtResource("2_sky_tex")
 centered = false
 

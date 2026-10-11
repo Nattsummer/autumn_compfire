@@ -43,18 +43,31 @@ var is_burning: bool = false
 ## สถานะไฟลามไหม้ทั้งป่า (End Game)
 var is_wildfire: bool = false
 
+## ระดับเสียงต่ำสุด (ตอนเริ่มเกม/ไฟปกติ ได้ยินแว่วๆ เบาสบาย) และสูงสุด (ตอนไฟโหมเต็มที่)
+@export var min_fire_volume_db: float = -32.0
+@export var max_fire_volume_db: float = -12.0
+
 @onready var _fire_vfx: Node2D = $FireVFX
 @onready var _flame_particles: CPUParticles2D = $FireVFX/FlameParticles
 @onready var _ember_particles: CPUParticles2D = $FireVFX/EmberParticles
 @onready var _smoke_particles: CPUParticles2D = $FireVFX/SmokeParticles
 @onready var _label: Label = $Label
+@onready var _fire_loop_sfx: AudioStreamPlayer2D = $FireLoopSFX
+@onready var _fire_flare_sfx: AudioStreamPlayer2D = $FireFlareSFX
 
 
 func _ready() -> void:
+	if _fire_loop_sfx != null:
+		_fire_loop_sfx.finished.connect(_fire_loop_sfx.play)
+		if not _fire_loop_sfx.playing:
+			_fire_loop_sfx.play()
 	_update_visuals()
+	_update_audio(0.0)
 
 
 func _physics_process(delta: float) -> void:
+	_update_audio(delta)
+
 	if is_wildfire:
 		# ในสถานะไฟลามทั้งป่า ให้ขยายเปลวเพลิงยักษ์โหมกระหน่ำอย่างต่อเนื่อง
 		heat_level = minf(1000.0, heat_level + 200.0 * delta)
@@ -105,6 +118,7 @@ func add_leaves(amount: int) -> int:
 
 	leaves_added.emit(amount, total_leaves_burned, earned_reward)
 	_update_visuals()
+	_trigger_fire_feed_sfx(amount)
 	return earned_reward
 
 
@@ -155,3 +169,38 @@ func _update_visuals() -> void:
 			_label.text = "Campfire (x%.1f)\nTime: %.1fs\nBurned: %d" % [mult, burn_elapsed_time, total_leaves_burned]
 		else:
 			_label.text = "Campfire (x1.0)\nReady\nBurned: %d" % total_leaves_burned
+
+
+## เล่นเสียงพุ่งวาบ (Flare SFX) และกระตุ้นเสียงไฟให้ดังขึ้นชั่วคราวเมื่อเติมใบไม้
+func _trigger_fire_feed_sfx(amount: int) -> void:
+	if _fire_flare_sfx != null:
+		_fire_flare_sfx.pitch_scale = randf_range(1.15, 1.3)
+		# เสียงเอฟเฟกต์เติมใบไม้พุ่งวาบชัดเจน ได้ยินชัดเจนเมื่อเติมใบไม้ (-15dB ถึง -8dB)
+		_fire_flare_sfx.volume_db = clampf(-15.0 + (float(amount) * 0.2), -15.0, -8.0)
+		_fire_flare_sfx.play()
+
+	# กระตุ้นเสียงกองไฟหลักให้พุ่งขึ้นทันที (+6.0 dB) เมื่อมีเชื้อเพลิง แล้วจะค่อยๆ ลดลงสู่ระดับความร้อนจริง
+	if _fire_loop_sfx != null:
+		var surge_target: float = minf(_fire_loop_sfx.volume_db + 6.0, max_fire_volume_db)
+		_fire_loop_sfx.volume_db = surge_target
+
+
+## ปรับระดับเสียงและความถี่ (Pitch) ของเสียงกองไฟตามระดับความร้อนและขนาดของเปลวเพลิง
+func _update_audio(delta: float) -> void:
+	if _fire_loop_sfx == null:
+		return
+
+	var heat_range: float = maxf(1.0, wildfire_threshold - min_heat_level)
+	var heat_ratio: float = clampf((heat_level - min_heat_level) / heat_range, 0.0, 1.0)
+	var target_volume: float = lerpf(min_fire_volume_db, max_fire_volume_db, heat_ratio)
+
+	if is_wildfire:
+		target_volume = max_fire_volume_db
+		_fire_loop_sfx.pitch_scale = 1.15
+	else:
+		_fire_loop_sfx.pitch_scale = lerpf(0.95, 1.12, heat_ratio)
+
+	if delta > 0.0:
+		_fire_loop_sfx.volume_db = move_toward(_fire_loop_sfx.volume_db, target_volume, 8.0 * delta)
+	else:
+		_fire_loop_sfx.volume_db = target_volume
